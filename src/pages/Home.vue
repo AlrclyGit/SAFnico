@@ -1,5 +1,10 @@
 <script setup>
+import { reactive } from 'vue'
 import { Bell, Setting } from '@element-plus/icons-vue'
+import HonorWall from '../components/HonorWall.vue'
+
+const honorWallData = reactive([1, 2, 0, 4, 0, 3, 0, 5, 0, 1, 2, 0, 4, 0, 3, 0, 5, 0, 0, 4, 0, 1, 2, 0, 4, 0, 3, 0, 1, 2, 0, 4, 0, 3, 0, 1, 2, 0, 4, 0, 3, 0, 1, 2, 0, 4, 0, 3, 0, 1, 2, 0, 4, 0, 3, 0, 1, 2, 0, 4, 0, 3, 0, 1, 2, 0, 4, 0, 3, 0, 1, 2, 0, 4, 0, 3, 0, 1, 2, 0, 4, 0, 3, 0])
+
 </script>
 
 <template>
@@ -35,6 +40,7 @@ import { Bell, Setting } from '@element-plus/icons-vue'
                         <div class="sa-text">DAY</div>
                     </div>
                 </div>
+                <HonorWall :value="honorWallData"></HonorWall>
             </div>
             <div class="sa-main"></div>
         </div>
