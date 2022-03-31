@@ -1,40 +1,65 @@
 <script setup>
-//
+// Import
 import { reactive } from 'vue'
+// Props
 let props = defineProps({
     value: Array,
 })
-//
-
-const data = reactive(props.value)
-const result = reactive([]);
+// Data
+let data = props.value
+// 绿色图标
+const section = reactive([]);
 for (let i = 0, len = data.length; i < len;) {
-    result.push(data.slice(i, i + 7));
+    section.push(data.slice(i, i + 7));
     i += 7
+}
+// 计算日期
+const date = reactive([]);
+let oldMonth = -1
+for (let i = 0, len = section.length; i < len;) {
+    let month = new Date(section[i][0].date).getMonth();
+    if (oldMonth != month) {
+        date.push(`${month + 1}月`)
+        oldMonth = month
+    } else if (oldMonth == month) {
+        date.push('')
+    }
+    i++;
 }
 
 </script>
 
 <template>
-    <div class="honor-wall-box">
-        <div v-for="blockList in result" class="honor-wall-li">
-            <div v-for="item in blockList" :class="'honor-wall-block ' + 'color' + item"></div>
-        </div>
-    </div>
+    <el-row class="honor-wall-box">
+        <el-col :span="2" v-for="blockList in section" class="li">
+            <el-tooltip
+                v-for="item in blockList"
+                placement="top"
+                :content="`${item.count} memo on ${item.date}`"
+                :show-after="500"
+            >
+                <div :class="'block ' + 'color' + item.count"></div>
+            </el-tooltip>
+        </el-col>
+    </el-row>
+    <el-row class="honor-wall-data">
+        <el-col v-for="item in date" :span="2" class="item">{{ item }}</el-col>
+    </el-row>
 </template>
 
 <style lang="less">
 .honor-wall-box {
-    width: 100%;
     display: flex;
     flex-direction: row-reverse;
-    justify-content: space-between;
+
+    .li {
+        display: flex;
+        flex-direction: column-reverse;
+        align-items: center;
+    }
 }
-.honor-wall-li {
-    display: flex;
-    flex-direction: column-reverse;
-}
-.honor-wall-block {
+
+.block {
     width: 12px;
     height: 12px;
     background: #efefef;
@@ -43,6 +68,18 @@ for (let i = 0, len = data.length; i < len;) {
     border-radius: 2px;
     margin-bottom: 4px;
     cursor: pointer;
+}
+
+.honor-wall-data {
+    display: flex;
+    flex-direction: row-reverse;
+    font-size: 12px;
+    color: #9d9d9d;
+    margin-top: 5px;
+
+    .item {
+        white-space: nowrap;
+    }
 }
 
 .color1 {
