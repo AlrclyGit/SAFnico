@@ -1,31 +1,14 @@
 <script setup>
-import { reactive } from 'vue'
-import { Bell, Setting, Grid, List, Sunny, Bicycle } from '@element-plus/icons-vue'
+import { ref, reactive } from 'vue'
+import { Bell, Setting, Grid, List, Sunny } from '@element-plus/icons-vue'
 import HonorWall from '../components/HonorWall.vue'
-
-const honorWallData = reactive([
-    { count: 1, date: '2022,3,12' },
-    { count: 2, date: '2022,3,11' },
-    { count: 3, date: '2022,3,10' },
-    { count: 3, date: '2022,3,9' },
-    { count: 4, date: '2022,3,8' },
-    { count: 0, date: '2022,3,7' },
-    { count: 2, date: '2022,3,6' },
-    { count: 2, date: '2022,3,5' },
-    { count: 3, date: '2022,3,4' },
-    { count: 5, date: '2022,3,3' },
-    { count: 5, date: '2022,3,2' },
-    { count: 1, date: '2022,3,1' },
-    { count: 0, date: '2022,2,28' },
-    { count: 1, date: '2022,2,27' },
-    { count: 2, date: '2022,2,26' },
-    { count: 1, date: '2022,2,25' },
-    { count: 4, date: '2022,2,24' },
-    { count: 0, date: '2022,2,23' },
-    { count: 2, date: '2022,2,22' },
-    { count: 3, date: '2022,2,21' },
-    { count: 2, date: '2022,2,20' },
-])
+import honorWallData from '../utils/honorWallData.js'
+//
+const linkName = ref('main')
+//
+function reds(link) {
+    linkName.value = link
+}
 </script>
 
 <template>
@@ -68,18 +51,33 @@ const honorWallData = reactive([
                 <HonorWall :value="honorWallData"></HonorWall>
                 <!-- 导航 -->
                 <div class="sa-aside-row3">
-                    <router-link to="/main" class="sa-button sa-show">
-                        <el-icon :size="14" color="white">
+                    <router-link
+                        to="/main"
+                        class="sa-button"
+                        :class="{ 'sa-show': linkName === 'main' }"
+                        @click="reds('main')"
+                    >
+                        <el-icon :size="14" :color="linkName === 'main' ? 'white' : '#9D9D9D'">
                             <grid />
                         </el-icon>MEMO
                     </router-link>
-                    <router-link to="/daily" class="sa-button">
-                        <el-icon :size="14" color="#9D9D9D">
+                    <router-link
+                        to="/daily"
+                        class="sa-button"
+                        :class="{ 'sa-show': linkName === 'daily' }"
+                        @click="reds('daily')"
+                    >
+                        <el-icon :size="14" :color="linkName === 'daily' ? 'white' : '#9D9D9D'">
                             <list />
                         </el-icon>每日回顾
                     </router-link>
-                    <router-link to="/random" class="sa-button">
-                        <el-icon :size="14" color="#9D9D9D">
+                    <router-link
+                        to="/random"
+                        class="sa-button"
+                        :class="{ 'sa-show': linkName === 'random' }"
+                        @click="reds('random')"
+                    >
+                        <el-icon :size="14" :color="linkName === 'random' ? 'white' : '#9D9D9D'">
                             <sunny />
                         </el-icon>随机漫步
                     </router-link>
@@ -171,9 +169,9 @@ const honorWallData = reactive([
             display: flex;
             flex-direction: row;
             align-items: center;
-            width: 100%;
+            width: 90%;
             line-height: 36px;
-            padding-left: 17px;
+            padding-left: 10%;
             font-size: 14px;
             border-radius: 5px;
             color: #9d9d9d;
