@@ -1,8 +1,44 @@
 <script setup>
+// 引入
+import { ref } from 'vue'
+import { RefreshLeft } from '@element-plus/icons-vue'
+import Search from '../components/Search.vue'
+import InputText from '../components/InputText.vue'
+// 变量
+const searcValue = ref('')
 
 </script>
 
-<template>Main</template>
+<template>
+    <div class="header">
+        <div class="left">
+            <div class="memo">MEMO</div>
+            <el-icon :size="16" color="#9D9D9D">
+                <refresh-left />
+            </el-icon>
+        </div>
+        <Search v-model="searcValue"></Search>
+    </div>
+    <InputText></InputText>
+</template>
 
-<style>
+<style scoped lang="less">
+.header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    .left {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+
+        .memo {
+            font-weight: 900;
+            color: #9d9d9d;
+            margin-right: 10px;
+        }
+    }
+}
 </style>
