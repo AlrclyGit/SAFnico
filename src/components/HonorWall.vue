@@ -7,7 +7,7 @@ let props = defineProps({
 })
 // Data
 let data = props.value
-// 绿色图标
+// 绿色图标展示
 const section = reactive([]);
 for (let i = 0, len = data.length; i < len;) {
     section.push(data.slice(i, i + 7));
@@ -26,6 +26,10 @@ for (let i = 0, len = section.length; i < len;) {
     }
     i++;
 }
+// 点击绿色图标
+function clickBlock() {
+    // API 导航跳转到搜索页面
+}
 
 </script>
 
@@ -38,7 +42,7 @@ for (let i = 0, len = section.length; i < len;) {
                 :content="`${item.count} memo on ${item.date}`"
                 :show-after="500"
             >
-                <div :class="'block ' + 'color' + item.count"></div>
+                <div :class="'block ' + 'color' + item.count" @click="clickBlock()"></div>
             </el-tooltip>
         </el-col>
     </el-row>
@@ -47,7 +51,7 @@ for (let i = 0, len = section.length; i < len;) {
     </el-row>
 </template>
 
-<style lang="less">
+<style scoped lang="less">
 .honor-wall-box {
     display: flex;
     flex-direction: row-reverse;
