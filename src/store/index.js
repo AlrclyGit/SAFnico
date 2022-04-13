@@ -10,9 +10,8 @@ export default createStore({
         listCover(state, data) {
             state.lists = data
         },
-        listPush(state, data) {
-            console.log(data)
-            state.lists.push(data)
+        listJoin(state, data) {
+            state.lists = state.lists.concat(data)
         },
         listUnshift(state, data) {
             state.lists.unshift(data)

@@ -7,21 +7,52 @@ import moment from 'moment'
 
 let store = useStore()
 let lists = computed(() => store.state.lists)
+let boxHeight = computed(() => window.innerHeight - 140)
 const page = ref(1)
+const box = ref(null)
+const geting = ref(false)
+const getEnd = ref(false)
 
 onMounted(() => {
-    axios({
-        method: 'GET',
-        url: `https://flow.alrcly.com/api/getPostList?page=${page}`,
-    }).then((result) => {
-        store.commit('listCover', result.data.data)
+    // 请求数据
+    getPostList()
+    // 监听滚动
+    box.value.addEventListener('scroll', (e) => {
+        let boxSt = e.target.scrollTop // 滚动高度
+        let boxScrollHeight = e.target.scrollHeight // 文档高度
+        if (boxSt + boxHeight.value >= boxScrollHeight) {
+            if (geting.value == true) {
+                console.log('数据请求中')
+                return null;
+            }
+            if (getEnd.value == true) {
+                console.log('我是有底线的')
+                return null;
+            }
+            page.value += 1
+            getPostList()
+        }
     })
+    function getPostList() {
+        geting.value = true
+        axios({
+            method: 'GET',
+            url: `https://flow.alrcly.com/api/getPostList?page=${page.value}`,
+        }).then((result) => {
+            store.commit('listJoin', result.data.data)
+            if (result.data.data.length == 0) {
+                getEnd.value = true
+            }
+            geting.value = false
+        })
+    }
 })
+
 
 </script>
 
 <template>
-    <div class="box">
+    <div class="box" ref="box">
         <div class="item" v-for="item in lists" :key="item.id">
             <div class="top">
                 <div class="time">{{ moment(item.created_at).format('YYYY-MM-DD HH:mm:ss') }}</div>
@@ -34,7 +65,11 @@ onMounted(() => {
                 <img v-for="i in item.img" :src="i">
             </div>
         </div>
+        <div class="item">
+            <div class="text" v-if="getEnd" style="text-align: center;">---------- 我是有底线的 ----------</div>
+        </div>
     </div>
+
 </template>
 
 <style scoped lang="less">
