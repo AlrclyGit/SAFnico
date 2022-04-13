@@ -15,6 +15,11 @@ export default createStore({
         },
         listUnshift(state, data) {
             state.lists.unshift(data)
+        },
+        listDelete(state, data) {
+            state.lists = state.lists.filter((currentValue) => {
+                return currentValue.id === data ? false : true
+            })
         }
     }
 })

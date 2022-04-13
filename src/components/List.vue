@@ -5,6 +5,7 @@ import { useStore } from 'vuex'
 import axios from 'axios'
 import moment from 'moment'
 import ShowImage from '../components/ShowImage.vue'
+import { ElMessageBox, ElMessage } from 'element-plus'
 
 let store = useStore() // VUEX 对象
 let lists = computed(() => store.state.lists) // 列表数据
@@ -40,9 +41,51 @@ function getPostList(isFirst = false) {
     })
 }
 
+//
 function clickImg(url) {
     showImageRef.value.clickImg(url)
 }
+
+//
+function operateEdit() {
+    console.log('EDIT');
+}
+
+// 
+function operateDelete(id) {
+    ElMessageBox.confirm('你确定要删除吗？', '提醒', {
+        confirmButtonText: '是的',
+        cancelButtonText: '取消',
+        type: 'warning',
+    }).then(() => {
+        axios({
+            method: 'POST',
+            url: `https://flow.alrcly.com/api/deletePost/${id}`,
+        }).then((result) => {
+            if (result.data.code == 0) {
+                store.commit('listDelete', id)
+                ElMessage({
+                    type: 'success',
+                    message: '删除成功',
+                })
+            } else {
+                ElMessage({
+                    type: 'error',
+                    message: '删除失败',
+                })
+            }
+        })
+    }).catch(() => {
+        ElMessage({
+            type: 'info',
+            message: '取消删除',
+        })
+    })
+
+
+}
+
+
 
 onMounted(() => {
     // 请求数据
@@ -72,14 +115,23 @@ defineExpose({ getNewPostList })
 </script>
 
 <template>
+
     <ShowImage ref="showImageRef"></ShowImage>
     <div class="box" ref="boxRef">
         <div class="item" v-for="item in lists" :key="item.id">
             <div class="top">
                 <div class="time">{{ moment(item.created_at).format('YYYY-MM-DD HH:mm:ss') }}</div>
-                <el-icon :size="14" color="#9D9D9D">
-                    <more-filled />
-                </el-icon>
+                <el-popover placement="bottom" trigger="hover">
+                    <template #reference>
+                        <el-icon :size="14" color="#9D9D9D">
+                            <more-filled />
+                        </el-icon>
+                    </template>
+                    <div class="operate">
+                        <div class="item" @click="operateEdit">编辑</div>
+                        <div class="item" @click="operateDelete(item.id)">删除</div>
+                    </div>
+                </el-popover>
             </div>
             <div class="text">{{ item.post_text }}</div>
             <div class="image-box">
@@ -90,6 +142,7 @@ defineExpose({ getNewPostList })
             <div class="text" v-if="getEnd" style="text-align: center;">---------- 我是有底线的 ----------</div>
         </div>
     </div>
+
 </template>
 
 <style scoped lang="less">
@@ -120,6 +173,7 @@ defineExpose({ getNewPostList })
             flex-direction: row;
             justify-content: space-between;
             margin-bottom: 10px;
+            cursor: pointer;
 
             .time {
                 font-size: 12px;
@@ -144,13 +198,28 @@ defineExpose({ getNewPostList })
                 max-width: 100px;
                 max-height: 100px;
                 border: 1px solid #e6e6e6;
-                cursor: pointer;
                 border-radius: 4px;
                 margin-right: 12px;
                 margin-top: 6px;
+                cursor: pointer;
             }
         }
 
+    }
+}
+
+.operate {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+
+    .item {
+        margin: 5px;
+    }
+
+    .item:hover {
+        color: #40c463;
     }
 }
 </style>
