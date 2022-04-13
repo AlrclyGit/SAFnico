@@ -19,7 +19,6 @@ const date = reactive([]);
 let oldMonth = -1
 for (let i = 0, len = section.length; i < len;) {
     let month = moment(section[i][0]['date']).format('M')
-    console.log(month)
     if (oldMonth != month) {
         date.push(`${month}月`)
         oldMonth = month

@@ -9,7 +9,7 @@ import { ElMessageBox, ElMessage } from 'element-plus'
 
 let store = useStore() // VUEX 对象
 let lists = computed(() => store.state.lists) // 列表数据
-let boxHeight = computed(() => window.innerHeight - 140) // 列表 Box 的高度
+let boxHeight = computed(() => window.innerHeight - 180) // 列表 Box 的高度
 const page = ref(1) // 页面
 const boxRef = ref(null) //  列表 Box 的 Dom
 const showImageRef = ref(null) // 图片秀的 Dom
@@ -81,11 +81,7 @@ function operateDelete(id) {
             message: '取消删除',
         })
     })
-
-
 }
-
-
 
 onMounted(() => {
     // 请求数据
@@ -115,10 +111,9 @@ defineExpose({ getNewPostList })
 </script>
 
 <template>
-
     <ShowImage ref="showImageRef"></ShowImage>
-    <div class="box" ref="boxRef">
-        <div class="item" v-for="item in lists" :key="item.id">
+    <div class="box" ref="boxRef" :style="`height:${boxHeight}px`">
+        <div class=" item" v-for="item in lists" :key="item.id">
             <div class="top">
                 <div class="time">{{ moment(item.created_at).format('YYYY-MM-DD HH:mm:ss') }}</div>
                 <el-popover placement="bottom" trigger="hover">
@@ -135,14 +130,13 @@ defineExpose({ getNewPostList })
             </div>
             <div class="text">{{ item.post_text }}</div>
             <div class="image-box">
-                <img v-for="i in item.img" :src="i" @click="clickImg(i)">
+                <img v-for="i in item.img" :src="i.url" @click="clickImg(i.url)">
             </div>
         </div>
         <div class="item">
-            <div class="text" v-if="getEnd" style="text-align: center;">---------- 我是有底线的 ----------</div>
+            <div v-if="getEnd" style="text-align: center;margin-bottom: 10px;">---------- 我是有底线的 ----------</div>
         </div>
     </div>
-
 </template>
 
 <style scoped lang="less">

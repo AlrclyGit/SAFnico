@@ -7,8 +7,8 @@ import InputText from '../components/InputText.vue'
 import List from '../components/List.vue'
 // 变量
 const searcValue = ref('') // 搜索框的值
+// 刷新列表
 const listRef = ref(null) // 列表的 Ref 对象
-
 function clickRefreshList() {
     listRef.value.getNewPostList()
 }

@@ -4,10 +4,6 @@ import { ref, defineEmits, defineProps, computed } from 'vue'
 import { Search, CircleClose } from '@element-plus/icons-vue'
 // 定义通用变量
 const inputValue = ref('')
-// 接收父组件变量
-let props = defineProps({
-    modelValue: null
-})
 // 自定义事件
 let emits = defineEmits(['update:modelValue'])
 // 发送数据到父组件
@@ -37,13 +33,7 @@ function clickCircleClose() {
 
         <input v-model="inputValue" @input="inputInput" @keyup.enter="enterInput" />
 
-        <el-icon
-            :size="18"
-            color="#9D9D9D"
-            class="right"
-            v-if="isCircleClose"
-            @click="clickCircleClose"
-        >
+        <el-icon :size="18" color="#9D9D9D" class="right" v-if="isCircleClose" @click="clickCircleClose">
             <circle-close />
         </el-icon>
     </div>
