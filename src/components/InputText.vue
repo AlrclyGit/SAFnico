@@ -5,10 +5,11 @@ import { PictureFilled, Plus } from '@element-plus/icons-vue'
 import { ElMessageBox } from 'element-plus'
 import { useStore } from 'vuex'
 import axios from 'axios'
+import ShowImage from '../components/ShowImage.vue'
 // 对象
 let store = useStore() // Vuex 对象
-// 变量
 const textareaaValue = ref('') // 输入框的值
+const showImageRef = ref(null) // 图片秀的 Dom
 // 计算属性：当文本发生改变的时，设置按钮样式
 const SendClass = computed(() => {
     if (textareaaValue.value == '') {
@@ -40,7 +41,9 @@ function send() {
             url: 'https://flow.alrcly.com/api/setPost',
             data: data
         }).then((result) => {
+            // 将数据更新到列表
             store.commit('listUnshift', result.data.data)
+            // 恢复默认状态
             textareaaValue.value = ''
             fileList.value = []
             showImageTag.value = 'none'
@@ -48,8 +51,6 @@ function send() {
     }
 }
 // 图片上传
-const dialogImageUrl = ref('') // 弹窗里的图片地址
-const dialogVisible = ref(false) // 弹窗是否显示
 const showImageTag = ref('none') // 决定图片区域是否显示，默认不显示
 const fileList = ref([]) //存放图片的数组
 // 当图片的 icon 被点击
@@ -63,18 +64,8 @@ function handleRemove(uploadFile) {
 }
 // 当点击图片时
 function handlePictureCardPreview(uploadFile) {
-    dialogImageUrl.value = uploadFile.url
-    dialogVisible.value = true
-}
-// 弹窗随图片大小改变
-const imageWidth = ref(0)
-function imageLoad(e) {
-    const img = e.target;
-    let width = 0;
-    if (img.fileSize > 0 || (img.width > 1 && img.height > 1)) {
-        width = img.width > 1024 ? 1064 : img.width
-    }
-    imageWidth.value = width + 'px';
+    // 调用「秀图片」控件的方法
+    showImageRef.value.clickImg(uploadFile.url)
 }
 </script>
 
@@ -89,9 +80,7 @@ function imageLoad(e) {
                     <Plus />
                 </el-icon>
             </el-upload>
-            <el-dialog v-model="dialogVisible" :width="imageWidth">
-                <el-image :src="dialogImageUrl" widht="100%" @load="imageLoad" />
-            </el-dialog>
+            <ShowImage ref="showImageRef"></ShowImage>
         </div>
 
         <div class="icon-button-box">

@@ -4,20 +4,24 @@ import { MoreFilled } from '@element-plus/icons-vue'
 import { useStore } from 'vuex'
 import axios from 'axios'
 import moment from 'moment'
+import ShowImage from '../components/ShowImage.vue'
 
 let store = useStore() // VUEX 对象
 let lists = computed(() => store.state.lists) // 列表数据
 let boxHeight = computed(() => window.innerHeight - 140) // 列表 Box 的高度
 const page = ref(1) // 页面
 const boxRef = ref(null) //  列表 Box 的 Dom
+const showImageRef = ref(null) // 图片秀的 Dom
 const geting = ref(false) // 请求中
 const getEnd = ref(false) // 没有更多数据可以加载
 
+//
 function getNewPostList() {
     page.value = 1
     getPostList(true)
 }
 
+//
 function getPostList(isFirst = false) {
     geting.value = true
     axios({
@@ -34,6 +38,10 @@ function getPostList(isFirst = false) {
         }
         geting.value = false
     })
+}
+
+function clickImg(url) {
+    showImageRef.value.clickImg(url)
 }
 
 onMounted(() => {
@@ -58,11 +66,13 @@ onMounted(() => {
     })
 })
 
-defineExpose({ getNewPostList }) // 将私有属性暴露给外部
+// 将私有属性暴露给外部
+defineExpose({ getNewPostList })
 
 </script>
 
 <template>
+    <ShowImage ref="showImageRef"></ShowImage>
     <div class="box" ref="boxRef">
         <div class="item" v-for="item in lists" :key="item.id">
             <div class="top">
@@ -73,14 +83,13 @@ defineExpose({ getNewPostList }) // 将私有属性暴露给外部
             </div>
             <div class="text">{{ item.post_text }}</div>
             <div class="image-box">
-                <img v-for="i in item.img" :src="i">
+                <img v-for="i in item.img" :src="i" @click="clickImg(i)">
             </div>
         </div>
         <div class="item">
             <div class="text" v-if="getEnd" style="text-align: center;">---------- 我是有底线的 ----------</div>
         </div>
     </div>
-
 </template>
 
 <style scoped lang="less">
