@@ -51,32 +51,20 @@ function reds(link) {
                 <HonorWall :value="honorWallData"></HonorWall>
                 <!-- 导航 -->
                 <div class="sa-aside-row3">
-                    <router-link
-                        to="/main"
-                        class="sa-button"
-                        :class="{ 'sa-show': linkName === 'main' }"
-                        @click="reds('main')"
-                    >
+                    <router-link to="/main" class="sa-button" :class="{ 'sa-show': linkName === 'main' }"
+                        @click="reds('main')">
                         <el-icon :size="14" :color="linkName === 'main' ? 'white' : '#9D9D9D'">
                             <grid />
                         </el-icon>MEMO
                     </router-link>
-                    <router-link
-                        to="/daily"
-                        class="sa-button"
-                        :class="{ 'sa-show': linkName === 'daily' }"
-                        @click="reds('daily')"
-                    >
+                    <router-link to="/daily" class="sa-button" :class="{ 'sa-show': linkName === 'daily' }"
+                        @click="reds('daily')">
                         <el-icon :size="14" :color="linkName === 'daily' ? 'white' : '#9D9D9D'">
                             <list />
                         </el-icon>每日回顾
                     </router-link>
-                    <router-link
-                        to="/random"
-                        class="sa-button"
-                        :class="{ 'sa-show': linkName === 'random' }"
-                        @click="reds('random')"
-                    >
+                    <router-link to="/random" class="sa-button" :class="{ 'sa-show': linkName === 'random' }"
+                        @click="reds('random')">
                         <el-icon :size="14" :color="linkName === 'random' ? 'white' : '#9D9D9D'">
                             <sunny />
                         </el-icon>随机漫步
@@ -90,10 +78,13 @@ function reds(link) {
     </div>
 </template>
 
-<style lang="less">
+<style scoped lang="less">
 .sa-app-box {
     display: flex;
     justify-content: center;
+    background-color: #FAFAFA;
+    margin: 0;
+    padding: 10px;
 }
 
 .sa-box {

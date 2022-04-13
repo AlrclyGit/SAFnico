@@ -4,6 +4,7 @@ import { ref } from 'vue'
 import { RefreshLeft } from '@element-plus/icons-vue'
 import Search from '../components/Search.vue'
 import InputText from '../components/InputText.vue'
+import List from '../components/List.vue'
 // 变量
 const searcValue = ref('')
 
@@ -19,7 +20,8 @@ const searcValue = ref('')
         </div>
         <Search v-model="searcValue"></Search>
     </div>
-    <InputText></InputText>
+    <InputText class="input-text"></InputText>
+    <List></List>
 </template>
 
 <style scoped lang="less">
@@ -40,5 +42,9 @@ const searcValue = ref('')
             margin-right: 10px;
         }
     }
+}
+
+.input-text {
+    margin-bottom: 10px;
 }
 </style>
