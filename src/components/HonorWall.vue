@@ -1,6 +1,7 @@
 <script setup>
 // Import
 import { reactive } from 'vue'
+import moment from 'moment'
 // Props
 let props = defineProps({
     value: Array,
@@ -17,9 +18,10 @@ for (let i = 0, len = data.length; i < len;) {
 const date = reactive([]);
 let oldMonth = -1
 for (let i = 0, len = section.length; i < len;) {
-    let month = new Date(section[i][0].date).getMonth();
+    let month = moment(section[i][0]['date']).format('M')
+    console.log(month)
     if (oldMonth != month) {
-        date.push(`${month + 1}月`)
+        date.push(`${month}月`)
         oldMonth = month
     } else if (oldMonth == month) {
         date.push('')
@@ -36,12 +38,8 @@ function clickBlock() {
 <template>
     <el-row class="honor-wall-box">
         <el-col :span="2" v-for="blockList in section" class="li">
-            <el-tooltip
-                v-for="item in blockList"
-                placement="top"
-                :content="`${item.count} memo on ${item.date}`"
-                :show-after="500"
-            >
+            <el-tooltip v-for="item in blockList" placement="top" :content="`${item.count} memo on ${item.date}`"
+                :show-after="500">
                 <div :class="'block ' + 'color' + item.count" @click="clickBlock()"></div>
             </el-tooltip>
         </el-col>
