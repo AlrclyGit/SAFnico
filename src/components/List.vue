@@ -1,23 +1,46 @@
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, defineExpose } from 'vue'
 import { MoreFilled } from '@element-plus/icons-vue'
 import { useStore } from 'vuex'
 import axios from 'axios'
 import moment from 'moment'
 
-let store = useStore()
-let lists = computed(() => store.state.lists)
-let boxHeight = computed(() => window.innerHeight - 140)
-const page = ref(1)
-const box = ref(null)
-const geting = ref(false)
-const getEnd = ref(false)
+let store = useStore() // VUEX 对象
+let lists = computed(() => store.state.lists) // 列表数据
+let boxHeight = computed(() => window.innerHeight - 140) // 列表 Box 的高度
+const page = ref(1) // 页面
+const boxRef = ref(null) //  列表 Box 的 Dom
+const geting = ref(false) // 请求中
+const getEnd = ref(false) // 没有更多数据可以加载
+
+function getNewPostList() {
+    page.value = 1
+    getPostList(true)
+}
+
+function getPostList(isFirst = false) {
+    geting.value = true
+    axios({
+        method: 'GET',
+        url: `https://flow.alrcly.com/api/getPostList?page=${page.value}`,
+    }).then((result) => {
+        if (isFirst) {
+            store.commit('listCover', result.data.data)
+        } else {
+            store.commit('listJoin', result.data.data)
+        }
+        if (result.data.data.length == 0) {
+            getEnd.value = true
+        }
+        geting.value = false
+    })
+}
 
 onMounted(() => {
     // 请求数据
-    getPostList()
+    getPostList(true)
     // 监听滚动
-    box.value.addEventListener('scroll', (e) => {
+    boxRef.value.addEventListener('scroll', (e) => {
         let boxSt = e.target.scrollTop // 滚动高度
         let boxScrollHeight = e.target.scrollHeight // 文档高度
         if (boxSt + boxHeight.value >= boxScrollHeight) {
@@ -33,26 +56,14 @@ onMounted(() => {
             getPostList()
         }
     })
-    function getPostList() {
-        geting.value = true
-        axios({
-            method: 'GET',
-            url: `https://flow.alrcly.com/api/getPostList?page=${page.value}`,
-        }).then((result) => {
-            store.commit('listJoin', result.data.data)
-            if (result.data.data.length == 0) {
-                getEnd.value = true
-            }
-            geting.value = false
-        })
-    }
 })
 
+defineExpose({ getNewPostList }) // 将私有属性暴露给外部
 
 </script>
 
 <template>
-    <div class="box" ref="box">
+    <div class="box" ref="boxRef">
         <div class="item" v-for="item in lists" :key="item.id">
             <div class="top">
                 <div class="time">{{ moment(item.created_at).format('YYYY-MM-DD HH:mm:ss') }}</div>
