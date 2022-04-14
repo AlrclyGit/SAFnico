@@ -9,8 +9,12 @@ import List from '../components/List.vue'
 const searcValue = ref('') // 搜索框的值
 // 刷新列表
 const listRef = ref(null) // 列表的 Ref 对象
+const inputTextRef = ref(null) // 输入框的 Ref 对象
 function clickRefreshList() {
     listRef.value.getNewPostList()
+}
+function listEditAction(e) {
+    inputTextRef.value.externalData(e)
 }
 </script>
 
@@ -24,8 +28,8 @@ function clickRefreshList() {
         </div>
         <Search v-model="searcValue"></Search>
     </div>
-    <InputText class="input-text"></InputText>
-    <List ref="listRef"></List>
+    <InputText class="input-text" ref="inputTextRef"></InputText>
+    <List ref="listRef" @editPost="listEditAction"></List>
 </template>
 
 <style scoped lang="less">

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, computed, defineExpose } from 'vue'
+import { ref, onMounted, computed, defineExpose, defineEmits } from 'vue'
 import { MoreFilled } from '@element-plus/icons-vue'
 import { useStore } from 'vuex'
 import axios from 'axios'
@@ -8,6 +8,7 @@ import ShowImage from '../components/ShowImage.vue'
 import { ElMessageBox, ElMessage } from 'element-plus'
 
 let store = useStore() // VUEX 对象
+let emits = defineEmits(['editPost']) // 自定义事件
 let lists = computed(() => store.state.lists) // 列表数据
 let boxHeight = computed(() => window.innerHeight - 180) // 列表 Box 的高度
 const page = ref(1) // 页面
@@ -16,13 +17,14 @@ const showImageRef = ref(null) // 图片秀的 Dom
 const geting = ref(false) // 请求中
 const getEnd = ref(false) // 没有更多数据可以加载
 
-//
+
+// 刷新列表
 function getNewPostList() {
     page.value = 1
     getPostList(true)
 }
 
-//
+// 获取列表
 function getPostList(isFirst = false) {
     geting.value = true
     axios({
@@ -41,17 +43,17 @@ function getPostList(isFirst = false) {
     })
 }
 
-//
+// 点击图片
 function clickImg(url) {
     showImageRef.value.clickImg(url)
 }
 
-//
-function operateEdit() {
-    console.log('EDIT');
+// 编辑
+function operateEdit(post) {
+    emits('editPost', post)
 }
 
-// 
+// 删除
 function operateDelete(id) {
     ElMessageBox.confirm('你确定要删除吗？', '提醒', {
         confirmButtonText: '是的',
@@ -113,30 +115,33 @@ defineExpose({ getNewPostList })
 <template>
     <ShowImage ref="showImageRef"></ShowImage>
     <div class="box" ref="boxRef" :style="`height:${boxHeight}px`">
-        <div class=" item" v-for="item in lists" :key="item.id">
-            <div class="top">
-                <div class="time">{{ moment(item.created_at).format('YYYY-MM-DD HH:mm:ss') }}</div>
-                <el-popover placement="bottom" trigger="hover">
-                    <template #reference>
-                        <el-icon :size="14" color="#9D9D9D">
-                            <more-filled />
-                        </el-icon>
-                    </template>
-                    <div class="operate">
-                        <div class="item" @click="operateEdit">编辑</div>
-                        <div class="item" @click="operateDelete(item.id)">删除</div>
-                    </div>
-                </el-popover>
+        <transition-group name="flip-list">
+            <div class="item" v-for="item in lists" :key="item.id">
+                <div class="top">
+                    <div class="time">{{ moment(item.created_at).format('YYYY-MM-DD HH:mm:ss') }}</div>
+                    <el-popover placement="bottom" trigger="hover">
+                        <template #reference>
+                            <el-icon :size="14" color="#9D9D9D">
+                                <more-filled />
+                            </el-icon>
+                        </template>
+                        <div class="operate">
+                            <div class="item" @click="operateEdit(item)">编辑</div>
+                            <div class="item" @click="operateDelete(item.id)">删除</div>
+                        </div>
+                    </el-popover>
+                </div>
+                <div class="text">{{ item.post_text }}</div>
+                <div class="image-box">
+                    <img v-for="i in item.img" :src="i.url" @click="clickImg(i.url)">
+                </div>
             </div>
-            <div class="text">{{ item.post_text }}</div>
-            <div class="image-box">
-                <img v-for="i in item.img" :src="i.url" @click="clickImg(i.url)">
-            </div>
-        </div>
+        </transition-group>
         <div class="item">
             <div v-if="getEnd" style="text-align: center;margin-bottom: 10px;">---------- 我是有底线的 ----------</div>
         </div>
     </div>
+
 </template>
 
 <style scoped lang="less">
@@ -189,13 +194,14 @@ defineExpose({ getNewPostList })
 
         .image-box {
             img {
-                max-width: 100px;
-                max-height: 100px;
+                width: 100px;
+                height: 100px;
                 border: 1px solid #e6e6e6;
                 border-radius: 4px;
                 margin-right: 12px;
                 margin-top: 6px;
                 cursor: pointer;
+                object-fit: cover;
             }
         }
 
@@ -215,5 +221,20 @@ defineExpose({ getNewPostList })
     .item:hover {
         color: #40c463;
     }
+}
+
+.flip-list-move {
+    transition: transform 0.8s ease;
+}
+
+.flip-list-enter-active,
+.flip-list-leave-active {
+    transition: all 1s ease;
+}
+
+.flip-list-enter-from,
+.flip-list-leave-to {
+    opacity: 0;
+    transform: translateX(30px);
 }
 </style>
