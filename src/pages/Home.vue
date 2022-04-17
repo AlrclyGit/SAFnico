@@ -1,11 +1,11 @@
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref } from 'vue'
 import { Bell, Setting, Grid, List, Sunny } from '@element-plus/icons-vue'
 import HonorWall from '../components/HonorWall.vue'
 import honorWallData from '../utils/honorWallData.js'
-//
+// 选中项目的名字
 const linkName = ref('main')
-//
+// 设置选中项目的名字
 function reds(link) {
     linkName.value = link
 }

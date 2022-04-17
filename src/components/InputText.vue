@@ -6,14 +6,15 @@ import { ElMessageBox } from 'element-plus'
 import { useStore } from 'vuex'
 import axios from 'axios'
 import ShowImage from '../components/ShowImage.vue'
+import selectImg from '../utils/selectImage.js'
 
 // 对象
 let store = useStore() // Vuex 对象
 let postID = -1 // 更新文章 ID
-const apiState = ref(true)  // 请求状态
 const textareaaValue = ref('') // 输入框的值
 const isUpdate = ref(false) // 是否是更新需求
-// 计算属性：当文本发生改变的时，设置按钮样式
+const apiState = ref(true)  // 请求状态
+// 当文本发生改变的时，设置按钮样式
 const sendBgc = computed(() => {
     if (textareaaValue.value == '') {
         return 'unsend-bgc'
@@ -21,7 +22,7 @@ const sendBgc = computed(() => {
         return 'send-bgc'
     }
 })
-// 方法：当点击发送按钮时，提示为空，或者发送给服务器
+// 当点击发送按钮时，提示为空，或者发送给服务器
 function send() {
     if (textareaaValue.value === '') {
         ElMessageBox.alert('你还没有输入任何内容呢，小淘气～', '提示', {
@@ -49,7 +50,6 @@ function send() {
                 url: 'https://flow.alrcly.com/api/updataPost',
                 data: data
             }).then((result) => {
-                console.log(result.data.data)
                 store.commit('listUpdata', result.data.data)
                 // 恢复默认状态
                 cancel()
@@ -90,10 +90,10 @@ const imgList = ref([]) //存放图片的数组
 const showimgAction = ref(-1)
 // 当图片的 icon 被点击
 function clickImageIcon() {
-    showImageTag.value = true //显示图片上传区域
+    imageUpdate()
 }
 // 当点击上传图片时
-function updataClick() {
+function imageUpdate() {
     selectImg().then((val) => {
         let param = new FormData()
         param.append('file', val)
@@ -109,21 +109,7 @@ function updataClick() {
         })
     })
 }
-// 选择一个图片
-async function selectImg() {
-    const arrFileHandle = await window.showOpenFilePicker({
-        types: [{
-            description: 'Images',
-            accept: {
-                'image/*': ['.png', '.gif', '.jpeg', '.jpg', '.webp']
-            }
-        }],
-        multiple: false
-    });
-    return await arrFileHandle[0].getFile();
-}
-
-// 当点击图片时
+// 当点放大时
 function onPreview(data) {
     // 调用「秀图片」控件的方法
     showImageRef.value.clickImg(data.url)
@@ -170,7 +156,7 @@ defineExpose({ externalData })
                 </div>
                 <img :src="item.url" @mouseover="showimgAction = item.id">
             </div>
-            <div class="upload-button" @click="updataClick">
+            <div class="upload-button" @click="imageUpdate">
                 <el-icon :size="30" color="#9D9D9D">
                     <plus />
                 </el-icon>

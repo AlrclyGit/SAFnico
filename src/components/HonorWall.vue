@@ -1,21 +1,20 @@
 <script setup>
-// Import
 import { reactive } from 'vue'
 import moment from 'moment'
-// Props
+// 定义 props 变量
 let props = defineProps({
     value: Array,
 })
-// Data
+// 原始数据
 let data = props.value
 // 绿色图标展示
-const section = reactive([]);
+const section = reactive([]); // 分组之后的数据
 for (let i = 0, len = data.length; i < len;) {
     section.push(data.slice(i, i + 7));
     i += 7
 }
 // 计算日期
-const date = reactive([]);
+const date = reactive([]); // 日期数组
 let oldMonth = -1
 for (let i = 0, len = section.length; i < len;) {
     let month = moment(section[i][0]['date']).format('M')
@@ -30,6 +29,7 @@ for (let i = 0, len = section.length; i < len;) {
 // 点击绿色图标
 function clickBlock() {
     // API 导航跳转到搜索页面
+    console.log('API 导航跳转到搜索页面')
 }
 
 </script>

@@ -1,14 +1,16 @@
 <script setup>
 import { ref, onMounted, computed, defineExpose, defineEmits } from 'vue'
 import { MoreFilled } from '@element-plus/icons-vue'
+import { ElMessageBox, ElMessage } from 'element-plus'
 import { useStore } from 'vuex'
 import axios from 'axios'
 import moment from 'moment'
 import ShowImage from '../components/ShowImage.vue'
-import { ElMessageBox, ElMessage } from 'element-plus'
 
-let store = useStore() // VUEX 对象
+// 设定
+let store = useStore() // Vuex 对象
 let emits = defineEmits(['editPost']) // 自定义事件
+// 变量
 let lists = computed(() => store.state.lists) // 列表数据
 let boxHeight = computed(() => window.innerHeight - 180) // 列表 Box 的高度
 const page = ref(1) // 页面
@@ -17,44 +19,27 @@ const showImageRef = ref(null) // 图片秀的 Dom
 const geting = ref(false) // 请求中
 const getEnd = ref(false) // 没有更多数据可以加载
 
-
 // 刷新列表
-function getNewPostList() {
+function refreshPostList() {
     page.value = 1
     getPostList(true)
 }
 
-// 获取列表
-function getPostList(isFirst = false) {
-    geting.value = true
-    axios({
-        method: 'GET',
-        url: `https://flow.alrcly.com/api/getPostList?page=${page.value}`,
-    }).then((result) => {
-        if (isFirst) {
-            store.commit('listCover', result.data.data)
-        } else {
-            store.commit('listJoin', result.data.data)
-        }
-        if (result.data.data.length == 0) {
-            getEnd.value = true
-        }
-        geting.value = false
-    })
-}
-
-// 点击图片
-function clickImg(url) {
+// 点击列表图片
+function clickPostImg(url) {
+    // 把图片信息传递到「图片秀」组件
     showImageRef.value.clickImg(url)
 }
 
-// 编辑
-function operateEdit(post) {
+// 编辑列表条目
+function editPost(post) {
+    // 修改 Vuex 里的列表数据
     emits('editPost', post)
 }
 
-// 删除
-function operateDelete(id) {
+// 删除列表条目
+function deletePsot(id) {
+    // 弹窗
     ElMessageBox.confirm('你确定要删除吗？', '提醒', {
         confirmButtonText: '是的',
         cancelButtonText: '取消',
@@ -107,8 +92,39 @@ onMounted(() => {
     })
 })
 
+// 获取列表数据（API）
+function getPostList(isFirst = false) {
+    geting.value = true
+    axios({
+        method: 'GET',
+        url: `https://flow.alrcly.com/api/getPostList?page=${page.value}`,
+    }).then((result) => {
+        if (isFirst) {
+            store.commit('listCover', result.data.data)
+        } else {
+            store.commit('listJoin', result.data.data)
+        }
+        if (result.data.data.length == 0) {
+            getEnd.value = true
+        }
+        geting.value = false
+    })
+}
+
+function getPostHtml(text) {
+    const urlRE = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/
+    let url = text.split(urlRE)
+    if (url.length > 1) {
+        let urlShow = url[2].split('//')[1]
+        let rulLabel = `<a target=“_blank” href="${url[1]}">${urlShow}</a>`
+        text = text.replace(urlRE, rulLabel)
+    }
+    const tagRE = /#[^\s]*/g
+    return text.replace(tagRE, `<span>$&</span>`)
+}
+
 // 将私有属性暴露给外部
-defineExpose({ getNewPostList })
+defineExpose({ refreshPostList })
 
 </script>
 
@@ -126,19 +142,19 @@ defineExpose({ getNewPostList })
                             </el-icon>
                         </template>
                         <div class="operate">
-                            <div class="item" @click="operateEdit(item)">编辑</div>
-                            <div class="item" @click="operateDelete(item.id)">删除</div>
+                            <div class="item" @click="editPost(item)">编辑</div>
+                            <div class="item" @click="deletePsot(item.id)">删除</div>
                         </div>
                     </el-popover>
                 </div>
-                <div class="text">{{ item.post_text }}</div>
+                <div class="text" v-html="getPostHtml(item.post_text)"></div>
                 <div class="image-box">
-                    <img v-for="i in item.img" :src="i.url" @click="clickImg(i.url)">
+                    <img v-for="i in item.img" :src="i.url" @click="clickPostImg(i.url)">
                 </div>
             </div>
         </transition-group>
-        <div class="item">
-            <div v-if="getEnd" style="text-align: center;margin-bottom: 10px;">---------- 我是有底线的 ----------</div>
+        <div class="item" v-if="getEnd">
+            <div style="text-align: center;margin-bottom: 10px;">---------- 我是有底线的 ----------</div>
         </div>
     </div>
 
@@ -190,6 +206,20 @@ defineExpose({ getNewPostList })
             overflow: hidden;
             word-break: break-word;
             letter-spacing: 0.1px;
+
+            :deep(a) {
+                color: #5783f7;
+                text-decoration: none;
+            }
+
+            :deep(span) {
+                color: #5783f7;
+                cursor: pointer;
+                background-color: #eef3fe;
+                padding: 4px;
+                font-size: 12px;
+                border-radius: 3px;
+            }
         }
 
         .image-box {

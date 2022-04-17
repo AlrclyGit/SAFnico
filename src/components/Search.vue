@@ -1,18 +1,19 @@
 <script setup>
 // 引入
-import { ref, defineEmits, defineProps, computed } from 'vue'
+import { ref, defineEmits, computed } from 'vue'
 import { Search, CircleClose } from '@element-plus/icons-vue'
-// 定义通用变量
-const inputValue = ref('')
+// 搜索框的值
+const searchValue = ref('')
 // 自定义事件
 let emits = defineEmits(['update:modelValue'])
-// 发送数据到父组件
+// 触发搜索框回车
 function enterInput() {
-    emits('update:modelValue', inputValue.value)
+    // 将搜索框的值，发送到父组件
+    emits('update:modelValue', searchValue.value)
 }
 // 是否显示删除按钮
 const isCircleClose = computed(() => {
-    if (inputValue.value == '') {
+    if (searchValue.value == '') {
         return false
     } else {
         return true
@@ -20,7 +21,7 @@ const isCircleClose = computed(() => {
 })
 // 清空输入框内容
 function clickCircleClose() {
-    inputValue.value = ''
+    searchValue.value = ''
 }
 
 </script>
@@ -30,9 +31,7 @@ function clickCircleClose() {
         <el-icon :size="16" color="#9D9D9D" class="left">
             <search />
         </el-icon>
-
-        <input v-model="inputValue" @input="inputInput" @keyup.enter="enterInput" />
-
+        <input v-model="searchValue" @keyup.enter="enterInput" />
         <el-icon :size="18" color="#9D9D9D" class="right" v-if="isCircleClose" @click="clickCircleClose">
             <circle-close />
         </el-icon>

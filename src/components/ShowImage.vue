@@ -2,13 +2,14 @@
 import { ref, defineExpose } from 'vue'
 const dialogImageUrl = ref('') // 弹窗里的图片地址
 const dialogVisible = ref(false) // 弹窗是否显示
-// 当点击图片时
+// 接收外部数据
 function clickImg(url) {
     dialogImageUrl.value = url
     dialogVisible.value = true
 }
 // 弹窗随图片大小改变
 const imageWidth = ref(0)
+// 图片加载完毕
 function imageLoad(e) {
     const img = e.target;
     let width = 0;
