@@ -1,7 +1,7 @@
 <script setup>
 // 引入
 import { ref, computed } from 'vue'
-import { PictureFilled, Plus } from '@element-plus/icons-vue'
+import { PictureFilled, Plus, ZoomIn, Delete } from '@element-plus/icons-vue'
 import { ElMessageBox } from 'element-plus'
 import { useStore } from 'vuex'
 import axios from 'axios'
@@ -32,7 +32,7 @@ function send() {
         apiState.value = false
         // 从图片数组里循环出需要的数据
         let imgIdArray = [];
-        fileList.value.forEach(element => {
+        imgList.value.forEach(element => {
             imgIdArray.push(element.id)
         });
         // 拼接需要发送的 Data 数据
@@ -55,8 +55,6 @@ function send() {
                 cancel()
             })
         } else {
-            console.log(data)
-            console.log(fileList.value)
             // 请求 API
             axios({
                 method: 'POST',
@@ -77,42 +75,73 @@ function send() {
 }
 function cancel() {
     textareaaValue.value = ''
-    fileList.value = []
+    imgList.value = []
     showImageTag.value = false
     isUpdate.value = false
     apiState.value = true
 }
+
 /**
  * 图片上传
  */
 const showImageTag = ref(false) // 决定图片区域是否显示，默认不显示
 const showImageRef = ref(null) // 图片秀的 Dom
-const fileList = ref([]) //存放图片的数组
+const imgList = ref([]) //存放图片的数组
+const showimgAction = ref(-1)
 // 当图片的 icon 被点击
 function clickImageIcon() {
     showImageTag.value = true //显示图片上传区域
 }
-// 当删除时
-function onRemove(e) {
-    // console.log(e.response.data.id)
-    console.log('通知服务器删除相片')
+// 当点击上传图片时
+function updataClick() {
+    selectImg().then((val) => {
+        let param = new FormData()
+        param.append('file', val)
+        axios({
+            method: 'POST',
+            url: 'https://flow.alrcly.com/api/updateImage',
+            data: param
+        }).then((result) => {
+            if (result.data.code == 0) {
+                console.log(result.data.data)
+                imgList.value.push(result.data.data)
+            }
+        })
+    })
 }
+// 选择一个图片
+async function selectImg() {
+    const arrFileHandle = await window.showOpenFilePicker({
+        types: [{
+            description: 'Images',
+            accept: {
+                'image/*': ['.png', '.gif', '.jpeg', '.jpg', '.webp']
+            }
+        }],
+        multiple: false
+    });
+    return await arrFileHandle[0].getFile();
+}
+
 // 当点击图片时
 function onPreview(data) {
     // 调用「秀图片」控件的方法
     showImageRef.value.clickImg(data.url)
 }
-// 
-function onSuccess(data) {
-    console.log(data)
+// 当删除图片时
+function onRemove(data) {
+    imgList.value = imgList.value.filter((currentValue) => {
+        return currentValue.id === data.id ? false : true
+    })
 }
+
 /**
  * 外部数据
  */
 function externalData(post) {
     postID = post.id
     textareaaValue.value = post.post_text
-    fileList.value = post.img
+    imgList.value = post.img
     if (post.img.length != 0) {
         showImageTag.value = true
     } else {
@@ -120,15 +149,32 @@ function externalData(post) {
     }
     isUpdate.value = true
 }
+
 // 将私有属性暴露给外部
 defineExpose({ externalData })
+
 </script>
 
 <template>
     <div class="input-text-box" v-loading="!apiState">
         <el-input type="textarea" :autosize="{ minRows: 2 }" v-model="textareaaValue" />
         <div class="upload-image" v-if="showImageTag">
-            <img v-for="item in fileList" :src="item.url">
+            <div class="imgItemBox" v-for="item in imgList">
+                <div class="imgAction" v-show="showimgAction == item.id" @mouseleave="showimgAction = -1">
+                    <el-icon :size="20" color="#FFFFFF" @click="onPreview(item)">
+                        <zoom-in />
+                    </el-icon>
+                    <el-icon :size="20" color="#FFFFFF" @click="onRemove(item)">
+                        <delete />
+                    </el-icon>
+                </div>
+                <img :src="item.url" @mouseover="showimgAction = item.id">
+            </div>
+            <div class="upload-button" @click="updataClick">
+                <el-icon :size="30" color="#9D9D9D">
+                    <plus />
+                </el-icon>
+            </div>
             <ShowImage ref="showImageRef"></ShowImage>
         </div>
         <div class="icon-button-box">
@@ -175,14 +221,55 @@ defineExpose({ externalData })
     }
 
     .upload-image {
+        display: flex;
+        flex-direction: row;
         margin-bottom: 10px;
+        flex-wrap: wrap;
 
-        img {
-            width: 100px;
-            height: 100px;
-            border-radius: 6px;
-            border: 1px solid #e6e6e6;
+        .imgItemBox {
+            width: 68px;
+            height: 68px;
+            position: relative;
+            margin-right: 10px;
             object-fit: cover;
+
+            .imgAction {
+                width: 100%;
+                height: 100%;
+                position: absolute;
+                display: flex;
+                flex-direction: row;
+                justify-content: space-around;
+                align-items: center;
+                background-color: rgba(0, 0, 0, 0.4);
+                border-radius: 6px;
+                border: 1px solid #e6e6e6;
+            }
+
+            img {
+                width: 100%;
+                height: 100%;
+                border-radius: 6px;
+                border: 1px solid #e6e6e6;
+            }
+        }
+
+        .upload-button {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 68px;
+            height: 68px;
+            border-radius: 6px;
+            object-fit: cover;
+            background-color: #fbfdff;
+            border: 1px dashed #c0ccda;
+            border-radius: 6px;
+        }
+
+        .upload-button:hover {
+            border-color: #409EFF;
+            color: #409EFF;
         }
     }
 

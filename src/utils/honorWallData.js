@@ -1,5 +1,5 @@
 const honorWallData = [
-    { count: 1, date: '2022,3,12' },
+    { count: 10, date: '2022,3,12' },
     { count: 2, date: '2022,3,11' },
     { count: 3, date: '2022,3,10' },
     { count: 3, date: '2022,3,9' },
