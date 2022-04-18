@@ -7,12 +7,24 @@ import { useStore } from 'vuex'
 import axios from 'axios'
 import ShowImage from '../components/ShowImage.vue'
 import selectImg from '../utils/selectImage.js'
-
+// 
+let props = defineProps({
+    postID: null,
+    textareaaValue: null,
+    imgList: null
+})
+let emits = defineEmits(['editPost']) // 自定义事件
 // 对象
 let store = useStore() // Vuex 对象
-let postID = -1 // 更新文章 ID
-const textareaaValue = ref('') // 输入框的值
-const isUpdate = ref(false) // 是否是更新需求
+let postID = props.postID ? props.postID : -1 // 更新文章 ID
+const textareaaValue = props.textareaaValue ? ref(props.textareaaValue) : ref('') // 输入框的值
+const isUpdate = computed(() => {
+    if (postID != -1) {
+        return true
+    } else {
+        return false
+    }
+})
 const apiState = ref(true)  // 请求状态
 // 当文本发生改变的时，设置按钮样式
 const sendBgc = computed(() => {
@@ -52,7 +64,7 @@ function send() {
             }).then((result) => {
                 store.commit('listUpdata', result.data.data)
                 // 恢复默认状态
-                cancel()
+                emits('editPost')
             })
         } else {
             // 请求 API
@@ -76,7 +88,6 @@ function send() {
 function cancel() {
     textareaaValue.value = ''
     imgList.value = []
-    showImageTag.value = false
     isUpdate.value = false
     apiState.value = true
 }
@@ -84,9 +95,15 @@ function cancel() {
 /**
  * 图片上传
  */
-const showImageTag = ref(false) // 决定图片区域是否显示，默认不显示
+const showImageTag = computed(() => {
+    if (imgList.value.length != 0) {
+        return true
+    } else {
+        return false
+    }
+})
 const showImageRef = ref(null) // 图片秀的 Dom
-const imgList = ref([]) //存放图片的数组
+const imgList = props.imgList ? ref(props.imgList) : ref([]) //存放图片的数组
 const showimgAction = ref(-1)
 // 当图片的 icon 被点击
 function clickImageIcon() {
@@ -121,24 +138,6 @@ function onRemove(data) {
     })
 }
 
-/**
- * 外部数据
- */
-function externalData(post) {
-    postID = post.id
-    textareaaValue.value = post.post_text
-    imgList.value = post.img
-    if (post.img.length != 0) {
-        showImageTag.value = true
-    } else {
-        showImageTag.value = false
-    }
-    isUpdate.value = true
-}
-
-// 将私有属性暴露给外部
-defineExpose({ externalData })
-
 </script>
 
 <template>
@@ -168,7 +167,7 @@ defineExpose({ externalData })
                 <picture-filled />
             </el-icon>
         </div>
-        <div class="button cancel" @click="cancel" v-if="isUpdate">取消</div>
+        <div class="button cancel" @click="emits('editPost')" v-if="isUpdate">取消</div>
         <div class="button send" :class="sendBgc" @click="send">发送</div>
     </div>
 </template>
@@ -237,6 +236,7 @@ defineExpose({ externalData })
                 height: 100%;
                 border-radius: 6px;
                 border: 1px solid #e6e6e6;
+                object-fit: cover;
             }
         }
 

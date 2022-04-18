@@ -9,16 +9,10 @@ import List from '../components/List.vue'
 const searcValue = ref('') // 搜索框的值
 // 刷新列表
 const listRef = ref(null) // 列表的 Ref 对象
-const inputTextRef = ref(null) // 输入框的 Ref 对象
 // 点击刷新列表
 function clickRefreshList() {
     // 将点击刷新列表事件，传递到列表组件
     listRef.value.refreshPostList()
-}
-// 列表自定义的编辑事件
-function editPostAtcion(e) {
-    // 将列表编辑事件的参数，传递到文本输入组件
-    inputTextRef.value.externalData(e)
 }
 </script>
 
@@ -32,8 +26,8 @@ function editPostAtcion(e) {
         </div>
         <Search v-model="searcValue"></Search>
     </div>
-    <InputText class="input-text" ref="inputTextRef"></InputText>
-    <List ref="listRef" @editPost="editPostAtcion"></List>
+    <InputText class="input-text"></InputText>
+    <List ref="listRef"></List>
 </template>
 
 <style scoped lang="less">

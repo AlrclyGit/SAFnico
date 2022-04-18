@@ -6,10 +6,10 @@ import { useStore } from 'vuex'
 import axios from 'axios'
 import moment from 'moment'
 import ShowImage from '../components/ShowImage.vue'
+import InputText from '../components/InputText.vue'
 
 // 设定
 let store = useStore() // Vuex 对象
-let emits = defineEmits(['editPost']) // 自定义事件
 // 变量
 let lists = computed(() => store.state.lists) // 列表数据
 let boxHeight = computed(() => window.innerHeight - 180) // 列表 Box 的高度
@@ -18,7 +18,7 @@ const boxRef = ref(null) //  列表 Box 的 Dom
 const showImageRef = ref(null) // 图片秀的 Dom
 const geting = ref(false) // 请求中
 const getEnd = ref(false) // 没有更多数据可以加载
-
+const inputTextShow = ref(-1) // 
 // 刷新列表
 function refreshPostList() {
     page.value = 1
@@ -32,9 +32,8 @@ function clickPostImg(url) {
 }
 
 // 编辑列表条目
-function editPost(post) {
-    // 修改 Vuex 里的列表数据
-    emits('editPost', post)
+function editPost(id) {
+    inputTextShow.value = id
 }
 
 // 删除列表条目
@@ -133,24 +132,29 @@ defineExpose({ refreshPostList })
     <div class="box" ref="boxRef" :style="`height:${boxHeight}px`">
         <transition-group name="flip-list">
             <div class="item" v-for="item in lists" :key="item.id">
-                <div class="top">
-                    <div class="time">{{ moment(item.created_at).format('YYYY-MM-DD HH:mm:ss') }}</div>
-                    <el-popover placement="bottom" trigger="hover">
-                        <template #reference>
-                            <el-icon :size="14" color="#9D9D9D">
-                                <more-filled />
-                            </el-icon>
-                        </template>
-                        <div class="operate">
-                            <div class="item" @click="editPost(item)">编辑</div>
-                            <div class="item" @click="deletePsot(item.id)">删除</div>
-                        </div>
-                    </el-popover>
+                <div v-if="inputTextShow != item.id">
+                    <div class="top">
+                        <div class="time">{{ moment(item.created_at).format('YYYY-MM-DD HH:mm:ss') }}</div>
+                        <el-popover placement="bottom" trigger="hover">
+                            <template #reference>
+                                <el-icon :size="14" color="#9D9D9D">
+                                    <more-filled />
+                                </el-icon>
+                            </template>
+                            <div class="operate">
+                                <div class="item" @click="editPost(item.id)">编辑</div>
+                                <div class="item" @click="deletePsot(item.id)">删除</div>
+                            </div>
+                        </el-popover>
+                    </div>
+                    <div class="text" v-html="getPostHtml(item.post_text)"></div>
+                    <div class="image-box">
+                        <img v-for="i in item.img" :src="i.url" @click="clickPostImg(i.url)">
+                    </div>
                 </div>
-                <div class="text" v-html="getPostHtml(item.post_text)"></div>
-                <div class="image-box">
-                    <img v-for="i in item.img" :src="i.url" @click="clickPostImg(i.url)">
-                </div>
+                <InputText class="input-text" @editPost="editPost(-1)" v-if="inputTextShow == item.id" :postID="item.id"
+                    :textareaaValue="item.post_text" :imgList="item.img">
+                </InputText>
             </div>
         </transition-group>
         <div class="item" v-if="getEnd">

@@ -1,14 +1,36 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { Bell, Setting, Grid, List, Sunny } from '@element-plus/icons-vue'
 import HonorWall from '../components/HonorWall.vue'
-import honorWallData from '../utils/honorWallData.js'
+import axios from 'axios'
 // 选中项目的名字
 const linkName = ref('main')
+const infoData = ref([])
+const honorWallData = ref([])
 // 设置选中项目的名字
 function reds(link) {
     linkName.value = link
 }
+// 获取信息
+axios({
+    method: 'POST',
+    url: `https://flow.alrcly.com/api/info`,
+}).then((result) => {
+    if (result.data.code == 0) {
+        infoData.value = result.data.data
+    }
+})
+// 获取荣誉墙数据
+axios({
+    method: 'POST',
+    url: `https://flow.alrcly.com/api/honorWall`,
+}).then((result) => {
+    if (result.data.code == 0) {
+        honorWallData.value = result.data.data
+    }
+})
+
+
 </script>
 
 <template>
@@ -35,15 +57,15 @@ function reds(link) {
                 <!-- 数据栏目 -->
                 <div class="sa-aside-row2">
                     <div>
-                        <div class="sa-number">63</div>
+                        <div class="sa-number">{{ infoData.count }}</div>
                         <div class="sa-text">MEMO</div>
                     </div>
                     <div>
                         <div class="sa-number">1</div>
-                        <div class="sa-text">TAT</div>
+                        <div class="sa-text">TAG</div>
                     </div>
                     <div>
-                        <div class="sa-number">185</div>
+                        <div class="sa-number">{{ infoData.day }}</div>
                         <div class="sa-text">DAY</div>
                     </div>
                 </div>

@@ -1,31 +1,39 @@
 <script setup>
-import { reactive } from 'vue'
+import { ref, reactive, computed } from 'vue'
 import moment from 'moment'
 // 定义 props 变量
 let props = defineProps({
     value: Array,
 })
 // 原始数据
-let data = props.value
+const data = computed(() => {
+    return props.value
+})
 // 绿色图标展示
-const section = reactive([]); // 分组之后的数据
-for (let i = 0, len = data.length; i < len;) {
-    section.push(data.slice(i, i + 7));
-    i += 7
-}
-// 计算日期
-const date = reactive([]); // 日期数组
-let oldMonth = -1
-for (let i = 0, len = section.length; i < len;) {
-    let month = moment(section[i][0]['date']).format('M')
-    if (oldMonth != month) {
-        date.push(`${month}月`)
-        oldMonth = month
-    } else if (oldMonth == month) {
-        date.push('')
+const section = computed(() => {
+    let array = [];
+    for (let i = 0, len = data.value.length; i < len;) {
+        array.push(data.value.slice(i, i + 7));
+        i += 7
     }
-    i++;
-}
+    return array;
+})
+// 计算日期
+const date = computed(() => {
+    let oldMonth = -1
+    let array = [];
+    for (let i = 0, len = section.value.length; i < len;) {
+        let month = moment(section.value[i][0]['date']).format('M')
+        if (oldMonth != month) {
+            array.push(`${month}月`)
+            oldMonth = month
+        } else if (oldMonth == month) {
+            array.push('')
+        }
+        i++;
+    }
+    return array
+})
 // 点击绿色图标
 function clickBlock() {
     // API 导航跳转到搜索页面
