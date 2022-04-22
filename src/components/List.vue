@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, computed, defineExpose, defineEmits } from 'vue'
+import { ref, onMounted, computed, defineExpose, watch } from 'vue'
 import { MoreFilled } from '@element-plus/icons-vue'
 import { ElMessageBox, ElMessage } from 'element-plus'
 import { useStore } from 'vuex'
@@ -7,29 +7,23 @@ import axios from 'axios'
 import moment from 'moment'
 import ShowImage from '../components/ShowImage.vue'
 import InputText from '../components/InputText.vue'
-
-// 设定
+//
 let store = useStore() // Vuex 对象
-// 变量
+let props = defineProps({ refreshList: Number }) // 接收父组件变量
 let lists = computed(() => store.state.lists) // 列表数据
 let boxHeight = computed(() => window.innerHeight - 180) // 列表 Box 的高度
 const page = ref(1) // 页面
 const boxRef = ref(null) //  列表 Box 的 Dom
-const showImageRef = ref(null) // 图片秀的 Dom
+const imageData = ref(null) // 图片秀数据
 const geting = ref(false) // 请求中
 const getEnd = ref(false) // 没有更多数据可以加载
-const inputTextShow = ref(-1) // 
+const inputTextShow = ref(-1) // 发生编辑操作的 Post
+
 // 刷新列表
-function refreshPostList() {
+watch(() => props.refreshList, () => {
     page.value = 1
     getPostList(true)
-}
-
-// 点击列表图片
-function clickPostImg(url) {
-    // 把图片信息传递到「图片秀」组件
-    showImageRef.value.clickImg(url)
-}
+})
 
 // 编辑列表条目
 function editPost(id) {
@@ -110,6 +104,7 @@ function getPostList(isFirst = false) {
     })
 }
 
+// 格式化 Post
 function getPostHtml(text) {
     const urlRE = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/
     let url = text.split(urlRE)
@@ -122,13 +117,10 @@ function getPostHtml(text) {
     return text.replace(tagRE, `<span>$&</span>`)
 }
 
-// 将私有属性暴露给外部
-defineExpose({ refreshPostList })
-
 </script>
 
 <template>
-    <ShowImage ref="showImageRef"></ShowImage>
+    <ShowImage :imageData="imageData"></ShowImage>
     <div class="box" ref="boxRef" :style="`height:${boxHeight}px`">
         <transition-group name="flip-list">
             <div class="item" v-for="item in lists" :key="item.id">
@@ -149,11 +141,11 @@ defineExpose({ refreshPostList })
                     </div>
                     <div class="text" v-html="getPostHtml(item.post_text)"></div>
                     <div class="image-box">
-                        <img v-for="i in item.img" :src="i.url" @click="clickPostImg(i.url)">
+                        <img v-for="i in item.img" :src="i.url" @click="imageData = i.url">
                     </div>
                 </div>
-                <InputText class="input-text" @editPost="editPost(-1)" v-if="inputTextShow == item.id" :postID="item.id"
-                    :textareaaValue="item.post_text" :imgList="item.img">
+                <InputText class="input-text" @endEditPost="editPost(-1)" v-if="inputTextShow == item.id"
+                    :postID="item.id" :textareaaValue="item.post_text" :imgList="item.img">
                 </InputText>
             </div>
         </transition-group>

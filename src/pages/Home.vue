@@ -1,36 +1,45 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { Bell, Setting, Grid, List, Sunny } from '@element-plus/icons-vue'
-import HonorWall from '../components/HonorWall.vue'
 import axios from 'axios'
-// 选中项目的名字
-const linkName = ref('main')
-const infoData = ref([])
-const honorWallData = ref([])
+import { useStore } from 'vuex'
+import HonorWall from '../components/HonorWall.vue'
+// 全局
+const infoData = ref([]) // 左侧信息
+const honorWallData = ref([]) // Post 列表
+// 监听 info 的变化
+let store = useStore()
+let info = computed(() => store.state.info)
+watch(info, () => {
+    getInfo()
+})
 // 设置选中项目的名字
+const linkName = ref('main')
 function reds(link) {
     linkName.value = link
 }
-// 获取信息
-axios({
-    method: 'POST',
-    url: `https://flow.alrcly.com/api/info`,
-}).then((result) => {
-    if (result.data.code == 0) {
-        infoData.value = result.data.data
-    }
-})
-// 获取荣誉墙数据
-axios({
-    method: 'POST',
-    url: `https://flow.alrcly.com/api/honorWall`,
-}).then((result) => {
-    if (result.data.code == 0) {
-        honorWallData.value = result.data.data
-    }
-})
-
-
+// 获取 info
+getInfo()
+function getInfo() {
+    // 获取信息
+    axios({
+        method: 'POST',
+        url: `https://flow.alrcly.com/api/info`,
+    }).then((result) => {
+        if (result.data.code == 0) {
+            infoData.value = result.data.data
+        }
+    })
+    // 获取荣誉墙数据
+    axios({
+        method: 'POST',
+        url: `https://flow.alrcly.com/api/honorWall`,
+    }).then((result) => {
+        if (result.data.code == 0) {
+            honorWallData.value = result.data.data
+        }
+    })
+}
 </script>
 
 <template>

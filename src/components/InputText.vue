@@ -13,7 +13,7 @@ let props = defineProps({
     textareaaValue: null,
     imgList: null
 })
-let emits = defineEmits(['editPost']) // 自定义事件
+let emits = defineEmits(['endEditPost']) // 自定义事件
 // 对象
 let store = useStore() // Vuex 对象
 let postID = props.postID ? props.postID : -1 // 更新文章 ID
@@ -64,7 +64,7 @@ function send() {
             }).then((result) => {
                 store.commit('listUpdata', result.data.data)
                 // 恢复默认状态
-                emits('editPost')
+                emits('endEditPost')
             })
         } else {
             // 请求 API
@@ -167,7 +167,7 @@ function onRemove(data) {
                 <picture-filled />
             </el-icon>
         </div>
-        <div class="button cancel" @click="emits('editPost')" v-if="isUpdate">取消</div>
+        <div class="button cancel" @click="emits('endEditPost')" v-if="isUpdate">取消</div>
         <div class="button send" :class="sendBgc" @click="send">发送</div>
     </div>
 </template>
