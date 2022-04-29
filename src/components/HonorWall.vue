@@ -1,14 +1,10 @@
 <script setup>
-import { ref, reactive, computed } from 'vue'
+import { defineProps, computed } from 'vue'
 import moment from 'moment'
 // 定义 props 变量
-let props = defineProps({
-    value: Array,
-})
+let props = defineProps({ value: Array, })
 // 原始数据
-const data = computed(() => {
-    return props.value
-})
+const data = computed(() => props.value)
 // 绿色图标展示
 const section = computed(() => {
     let array = [];

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, computed, defineExpose, watch } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import { MoreFilled } from '@element-plus/icons-vue'
 import { ElMessageBox, ElMessage } from 'element-plus'
 import { useStore } from 'vuex'
@@ -7,11 +7,13 @@ import axios from 'axios'
 import moment from 'moment'
 import ShowImage from '../components/ShowImage.vue'
 import InputText from '../components/InputText.vue'
+import { innerSize } from '../utils/windowSize.js'
 //
-let store = useStore() // Vuex 对象
-let props = defineProps({ refreshList: Number }) // 接收父组件变量
-let lists = computed(() => store.state.lists) // 列表数据
-let boxHeight = computed(() => window.innerHeight - 180) // 列表 Box 的高度
+const store = useStore() // Vuex 对象
+const props = defineProps({ refreshList: Number }) // 接收父组件变量
+const lists = computed(() => store.state.lists) // 列表数据
+const innerHeight = innerSize().height // 获取 innerSize 
+const boxHeight = computed(() => innerHeight.value - 180) // List 列表 DIV 的高度
 const page = ref(1) // 页面
 const boxRef = ref(null) //  列表 Box 的 Dom
 const imageData = ref(null) // 图片秀数据
@@ -202,6 +204,7 @@ function getPostHtml(text) {
             overflow: hidden;
             word-break: break-word;
             letter-spacing: 0.1px;
+            white-space: pre-wrap;
 
             :deep(a) {
                 color: #5783f7;
