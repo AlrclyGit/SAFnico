@@ -19,12 +19,11 @@ function reds(link) {
     linkName.value = link
 }
 // 获取 info
-getInfo()
 function getInfo() {
     // 获取信息
     axios({
-        method: 'POST',
-        url: `https://flow.alrcly.com/api/info`,
+        method: 'GET',
+        url: `https://flow.alrcly.com/api/info?token=${JSON.parse(localStorage.getItem('token'))}`,
     }).then((result) => {
         if (result.data.code == 0) {
             infoData.value = result.data.data
@@ -32,8 +31,8 @@ function getInfo() {
     })
     // 获取荣誉墙数据
     axios({
-        method: 'POST',
-        url: `https://flow.alrcly.com/api/honorWall`,
+        method: 'GET',
+        url: `https://flow.alrcly.com/api/honorWall?token=${JSON.parse(localStorage.getItem('token'))}`,
     }).then((result) => {
         if (result.data.code == 0) {
             honorWallData.value = result.data.data

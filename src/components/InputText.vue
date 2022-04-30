@@ -51,7 +51,8 @@ function send() {
         // 拼接需要发送的 Data 数据
         let data = {
             'textareaa_value': textareaaValue.value,
-            'img_id_array': imgIdArray
+            'img_id_array': imgIdArray,
+            'token': JSON.parse(localStorage.getItem('token'))
         }
         // 根据请求构建
         if (isUpdate.value === true) {
@@ -102,7 +103,8 @@ const showImageTag = computed(() => {
         return false
     }
 })
-const showImageRef = ref(null) // 图片秀的 Dom
+const showImageUrl = ref('') // 图片秀接收的 URL
+const showImageState = ref(0) // 图片秀接收的状态
 const imgList = props.imgList ? ref(props.imgList) : ref([]) //存放图片的数组
 const showimgAction = ref(-1)
 // 当图片的 icon 被点击
@@ -114,6 +116,7 @@ function imageUpdate() {
     selectImg().then((val) => {
         let param = new FormData()
         param.append('file', val)
+        param.append('token', JSON.parse(localStorage.getItem('token')))
         axios({
             method: 'POST',
             url: 'https://flow.alrcly.com/api/updateImage',
@@ -125,11 +128,6 @@ function imageUpdate() {
             }
         })
     })
-}
-// 当点放大时
-function onPreview(data) {
-    // 调用「秀图片」控件的方法
-    showImageRef.value.clickImg(data.url)
 }
 // 当删除图片时
 function onRemove(data) {
@@ -146,7 +144,7 @@ function onRemove(data) {
         <div class="upload-image" v-if="showImageTag">
             <div class="imgItemBox" v-for="item in imgList">
                 <div class="imgAction" v-show="showimgAction == item.id" @mouseleave="showimgAction = -1">
-                    <el-icon :size="20" color="#FFFFFF" @click="onPreview(item)">
+                    <el-icon :size="20" color="#FFFFFF" @click="showImageUrl = item.url; showImageState++">
                         <zoom-in />
                     </el-icon>
                     <el-icon :size="20" color="#FFFFFF" @click="onRemove(item)">
@@ -160,7 +158,7 @@ function onRemove(data) {
                     <plus />
                 </el-icon>
             </div>
-            <ShowImage ref="showImageRef"></ShowImage>
+            <ShowImage :url="showImageUrl" :state="showImageState"></ShowImage>
         </div>
         <div class="icon-button-box">
             <el-icon :size="20" color="#9D9D9D" @click="clickImageIcon">

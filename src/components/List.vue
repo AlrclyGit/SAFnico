@@ -43,6 +43,7 @@ function deletePsot(id) {
         axios({
             method: 'POST',
             url: `https://flow.alrcly.com/api/deletePost/${id}`,
+            data: { 'token': JSON.parse(localStorage.getItem('token')) }
         }).then((result) => {
             if (result.data.code == 0) {
                 store.commit('listDelete', id)
@@ -92,7 +93,8 @@ function getPostList(isFirst = false) {
     geting.value = true
     axios({
         method: 'GET',
-        url: `https://flow.alrcly.com/api/getPostList?page=${page.value}`,
+        url: `https://flow.alrcly.com/api/getPostList?page=${page.value}&token=${JSON.parse(localStorage.getItem('token'))
+            }`,
     }).then((result) => {
         if (isFirst) {
             store.commit('listCover', result.data.data)
