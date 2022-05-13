@@ -16,7 +16,8 @@ const innerHeight = innerSize().height // 获取 innerSize
 const boxHeight = computed(() => innerHeight.value - 180) // List 列表 DIV 的高度
 const page = ref(1) // 页面
 const boxRef = ref(null) //  列表 Box 的 Dom
-const imageData = ref(null) // 图片秀数据
+const showImageUrl = ref('') // 图片秀的 URL 地址
+const showImageState = ref(0) // 图片秀的状态
 const geting = ref(false) // 请求中
 const getEnd = ref(false) // 没有更多数据可以加载
 const inputTextShow = ref(-1) // 发生编辑操作的 Post
@@ -124,7 +125,7 @@ function getPostHtml(text) {
 </script>
 
 <template>
-    <ShowImage :imageData="imageData"></ShowImage>
+    <ShowImage :url="showImageUrl" :state="showImageState"></ShowImage>
     <div class="box" ref="boxRef" :style="`height:${boxHeight}px`">
         <transition-group name="flip-list">
             <div class="item" v-for="item in lists" :key="item.id">
@@ -145,7 +146,7 @@ function getPostHtml(text) {
                     </div>
                     <div class="text" v-html="getPostHtml(item.post_text)"></div>
                     <div class="image-box">
-                        <img v-for="i in item.img" :src="i.url" @click="imageData = i.url">
+                        <img v-for="i in item.img" :src="i.url" @click="showImageUrl = i.url; showImageState++">
                     </div>
                 </div>
                 <InputText class="input-text" @endEditPost="editPost(-1)" v-if="inputTextShow == item.id"
