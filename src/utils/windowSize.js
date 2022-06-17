@@ -1,6 +1,6 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 
-export function innerSize() {
+export default () => {
 
     const width = ref(window.innerWidth)
     const height = ref(window.innerHeight)

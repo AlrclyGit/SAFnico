@@ -1,50 +1,34 @@
 <script setup>
 import { ref, onMounted, computed, watch } from 'vue'
-import { MoreFilled } from '@element-plus/icons-vue'
 import { ElMessageBox, ElMessage } from 'element-plus'
+import { MoreFilled } from '@element-plus/icons-vue'
 import { useStore } from 'vuex'
 import axios from 'axios'
 import moment from 'moment'
 import ShowImage from '../components/ShowImage.vue'
 import InputText from '../components/InputText.vue'
-import { innerSize } from '../utils/windowSize.js'
-//
+import useWindowSize from '../utils/windowSize.js'
+// 插件变量
 const store = useStore() // Vuex 对象
+const windowSize = useWindowSize() // 窗口大小对象
+// 接收父组件变量
 const props = defineProps({
     refreshList: Number,
     keyword: String
-}) // 接收父组件变量
+})
+watch(() => { props.refreshList }, () => { getPostList(true) }) // 刷新量发生变化时，重新请求列表
+const keyword = computed(() => encodeURIComponent(props.keyword)) // 搜索词
+watch(keyword, () => { getPostList(true) }) // 搜索词发生变化时，重新请求列表
+// 
 const lists = computed(() => store.state.lists) // 列表数据
-const innerHeight = innerSize().height // 获取 innerSize 
-const boxHeight = computed(() => innerHeight.value - 180) // List 列表 DIV 的高度
+const boxHeight = computed(() => windowSize.height.value - 180) // List 列表 DIV 的高度
 const page = ref(1) // 页面
-const keyword = ref('') //搜索词
 const boxRef = ref(null) //  列表 Box 的 Dom
 const showImageUrl = ref('') // 图片秀的 URL 地址
 const showImageState = ref(0) // 图片秀的状态
 const geting = ref(false) // 请求中
 const getEnd = ref(false) // 没有更多数据可以加载
 const inputTextShow = ref(-1) // 发生编辑操作的 Post
-
-// 刷新列表
-watch(() => props.refreshList, () => {
-    page.value = 1
-    getEnd.value = false
-    getPostList(true)
-})
-
-// 刷新列表
-watch(() => props.keyword, () => {
-    page.value = 1
-    getEnd.value = false
-    keyword.value = props.keyword
-    getPostList(true)
-})
-
-// 编辑列表条目
-function editPost(id) {
-    inputTextShow.value = id
-}
 
 // 删除列表条目
 function deletePsot(id) {
@@ -80,7 +64,7 @@ function deletePsot(id) {
     })
 }
 
-onMounted(() => {
+onMounted(() => { //构造时
     // 请求数据
     getPostList(true)
     // 监听滚动
@@ -105,6 +89,10 @@ onMounted(() => {
 // 获取列表数据（API）
 function getPostList(isFirst = false) {
     geting.value = true
+    if (isFirst) {
+        page.value = 1
+        getEnd.value = false
+    }
     axios({
         method: 'GET',
         url: `https://flow.alrcly.com/api/getPostList?token=${JSON.parse(localStorage.getItem('token'))}&page=${page.value}&keyword=${keyword.value}`,
@@ -141,7 +129,7 @@ function getPostHtml(text) {
     <div class="box" ref="boxRef" :style="`height:${boxHeight}px`">
         <transition-group name="flip-list">
             <div class="item" v-for="item in lists" :key="item.id">
-                <div v-if="inputTextShow != item.id">
+                <div v-if="item.id != inputTextShow">
                     <div class="top">
                         <div class="time">{{ moment(item.created_at).format('YYYY-MM-DD HH:mm:ss') }}</div>
                         <el-popover placement="bottom" trigger="hover">
@@ -151,7 +139,7 @@ function getPostHtml(text) {
                                 </el-icon>
                             </template>
                             <div class="operate">
-                                <div class="item" @click="editPost(item.id)">编辑</div>
+                                <div class="item" @click="inputTextShow = item.id">编辑</div>
                                 <div class="item" @click="deletePsot(item.id)">删除</div>
                             </div>
                         </el-popover>
@@ -161,8 +149,8 @@ function getPostHtml(text) {
                         <img v-for="i in item.img" :src="i.url" @click="showImageUrl = i.url; showImageState++">
                     </div>
                 </div>
-                <InputText class="input-text" @endEditPost="editPost(-1)" v-if="inputTextShow == item.id"
-                    :postID="item.id" :textareaaValue="item.post_text" :imgList="item.img">
+                <InputText v-else class="input-text" @endEditPost="inputTextShow = -1" :postID="item.id"
+                    :textareaaValue="item.post_text" :imgList="item.img">
                 </InputText>
             </div>
         </transition-group>

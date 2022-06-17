@@ -7,13 +7,13 @@ import { useStore } from 'vuex'
 import axios from 'axios'
 import ShowImage from '../components/ShowImage.vue'
 import selectImg from '../utils/selectImage.js'
-// 
+// 接收父组件变量
 let props = defineProps({
     postID: null,
     textareaaValue: null,
     imgList: null
 })
-let emits = defineEmits(['endEditPost']) // 自定义事件
+let emits = defineEmits(['endEditPost']) // 自定义结束编辑事件
 // 对象
 let store = useStore() // Vuex 对象
 let postID = props.postID ? props.postID : -1 // 更新文章 ID
