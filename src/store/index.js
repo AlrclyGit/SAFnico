@@ -10,7 +10,6 @@ export default createStore({
     mutations: {
         listCover(state, data) { // 覆盖
             state.lists = data
-            state.info++
         },
         listJoin(state, data) { // 尾部
             state.lists = state.lists.concat(data)

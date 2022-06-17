@@ -19,6 +19,7 @@ function reds(link) {
     linkName.value = link
 }
 // 获取 info
+getInfo()
 function getInfo() {
     // 获取信息
     axios({

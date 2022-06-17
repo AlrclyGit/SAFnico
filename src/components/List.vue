@@ -10,11 +10,15 @@ import InputText from '../components/InputText.vue'
 import { innerSize } from '../utils/windowSize.js'
 //
 const store = useStore() // Vuex 对象
-const props = defineProps({ refreshList: Number }) // 接收父组件变量
+const props = defineProps({
+    refreshList: Number,
+    keyword: String
+}) // 接收父组件变量
 const lists = computed(() => store.state.lists) // 列表数据
 const innerHeight = innerSize().height // 获取 innerSize 
 const boxHeight = computed(() => innerHeight.value - 180) // List 列表 DIV 的高度
 const page = ref(1) // 页面
+const keyword = ref('') //搜索词
 const boxRef = ref(null) //  列表 Box 的 Dom
 const showImageUrl = ref('') // 图片秀的 URL 地址
 const showImageState = ref(0) // 图片秀的状态
@@ -25,6 +29,15 @@ const inputTextShow = ref(-1) // 发生编辑操作的 Post
 // 刷新列表
 watch(() => props.refreshList, () => {
     page.value = 1
+    getEnd.value = false
+    getPostList(true)
+})
+
+// 刷新列表
+watch(() => props.keyword, () => {
+    page.value = 1
+    getEnd.value = false
+    keyword.value = props.keyword
     getPostList(true)
 })
 
@@ -94,8 +107,7 @@ function getPostList(isFirst = false) {
     geting.value = true
     axios({
         method: 'GET',
-        url: `https://flow.alrcly.com/api/getPostList?page=${page.value}&token=${JSON.parse(localStorage.getItem('token'))
-            }`,
+        url: `https://flow.alrcly.com/api/getPostList?token=${JSON.parse(localStorage.getItem('token'))}&page=${page.value}&keyword=${keyword.value}`,
     }).then((result) => {
         if (isFirst) {
             store.commit('listCover', result.data.data)

@@ -22,7 +22,7 @@ const refreshList = ref(1) // 刷新列表
         <Search v-model="searcValue"></Search>
     </div>
     <InputText class="input-text"></InputText>
-    <List :refreshList="refreshList"></List>
+    <List :refreshList="refreshList" :keyword="searcValue"></List>
 </template>
 
 <style scoped lang="less">

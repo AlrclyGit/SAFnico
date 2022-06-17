@@ -22,6 +22,8 @@ const isCircleClose = computed(() => {
 // 清空输入框内容
 function clickCircleClose() {
     searchValue.value = ''
+    // 将搜索框的值，发送到父组件
+    emits('update:modelValue', searchValue.value)
 }
 
 </script>

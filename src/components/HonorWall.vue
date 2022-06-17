@@ -43,7 +43,8 @@ function clickBlock() {
         <el-col :span="2" v-for="blockList in section" class="li">
             <el-tooltip v-for="item in blockList" placement="top" :content="`${item.count} memo on ${item.date}`"
                 :show-after="500">
-                <div :class="'block ' + (item.count > 5 ? 'color5' : 'color' + item.count)" @click="clickBlock()"></div>
+                <div class='block' :class="item.count >= 5 ? 'color5' : `color` + item.count" @click="clickBlock()">
+                </div>
             </el-tooltip>
         </el-col>
     </el-row>
