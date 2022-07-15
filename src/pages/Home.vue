@@ -50,8 +50,8 @@ function getInfo() {
                 <!-- 信息栏目 -->
                 <div class="sa-aside-row1">
                     <div class="clo1">
-                        <div class="sa-aside-name">萧俊介</div>
-                        <div class="sa-asid-pro">PRO</div>
+                        <div class="sa-aside-name">卡片笔记</div>
+                        <div class="sa-asid-pro">俊介</div>
                     </div>
                     <div class="clo2">
                         <el-icon :size="20" color="#9D9D9D">
@@ -79,7 +79,7 @@ function getInfo() {
                     </div>
                 </div>
                 <!-- 荣誉墙 -->
-                <HonorWall :value="honorWallData"></HonorWall>
+                <HonorWall :HonorWallData="honorWallData"></HonorWall>
                 <!-- 导航 -->
                 <div class="sa-aside-row3">
                     <router-link to="/main" class="sa-button" :class="{ 'sa-show': linkName === 'main' }"
@@ -147,7 +147,7 @@ function getInfo() {
 
             .sa-asid-pro {
                 color: white;
-                background: #9d9d9d;
+                background: #55bb8e;
                 font-size: 12px;
                 padding: 2px 4px;
                 border-radius: 4px;

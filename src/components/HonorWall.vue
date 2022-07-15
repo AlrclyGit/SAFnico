@@ -2,23 +2,23 @@
 import { defineProps, computed } from 'vue'
 import moment from 'moment'
 // 定义 props 变量
-let props = defineProps({ value: Array, })
-// 原始数据
-const data = computed(() => props.value)
-// 绿色图标展示
+let props = defineProps({
+    HonorWallData: Array
+})
+// 把原始数据分割成 7 个一组，方便渲染循环
 const section = computed(() => {
     let array = [];
-    for (let i = 0, len = data.value.length; i < len;) {
-        array.push(data.value.slice(i, i + 7));
-        i += 7
+    for (let i = 0; i < props.HonorWallData.length; i += 7) {
+        array.push(props.HonorWallData.slice(i, i + 7));
     }
     return array;
 })
-// 计算日期
+// 生成荣誉墙下方的月份信息
 const date = computed(() => {
     let oldMonth = -1
     let array = [];
-    for (let i = 0, len = section.value.length; i < len;) {
+    for (let i = 0; i < section.value.length; i++) {
+        // 将每组第一个数据包含的日期信息中的月份提取出来
         let month = moment(section.value[i][0]['date']).format('M')
         if (oldMonth != month) {
             array.push(`${month}月`)
@@ -26,7 +26,6 @@ const date = computed(() => {
         } else if (oldMonth == month) {
             array.push('')
         }
-        i++;
     }
     return array
 })

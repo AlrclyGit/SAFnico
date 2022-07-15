@@ -14,6 +14,7 @@ function enterInput() {
 // 是否显示删除按钮
 const isCircleClose = computed(() => {
     if (searchValue.value == '') {
+        emits('update:modelValue', searchValue.value)
         return false
     } else {
         return true
