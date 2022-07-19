@@ -116,6 +116,7 @@ function getInfo() {
     background-color: #FAFAFA;
     margin: 0;
     padding: 10px;
+    font-family: 'JetBrains Mono', 'PingFang SC', monospace, sans-serif;
 }
 
 .sa-box {
