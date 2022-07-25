@@ -43,15 +43,15 @@ function getInfo() {
 </script>
 
 <template>
-    <div class="sa-app-box">
-        <div class="sa-box">
+    <div class="app-box">
+        <div class="box">
             <!-- 侧边栏 -->
-            <div class="sa-aside">
+            <div class="aside">
                 <!-- 信息栏目 -->
-                <div class="sa-aside-row1">
+                <div class="aside-row1">
                     <div class="clo1">
-                        <div class="sa-aside-name">卡片笔记</div>
-                        <div class="sa-asid-pro">俊介</div>
+                        <div class="aside-name">卡片笔记</div>
+                        <div class="asid-pro">俊介</div>
                     </div>
                     <div class="clo2">
                         <el-icon :size="20" color="#9D9D9D">
@@ -64,37 +64,37 @@ function getInfo() {
                     </div>
                 </div>
                 <!-- 数据栏目 -->
-                <div class="sa-aside-row2">
+                <div class="aside-row2">
                     <div>
-                        <div class="sa-number">{{ infoData.count }}</div>
-                        <div class="sa-text">MEMO</div>
+                        <div class="number">{{ infoData.count }}</div>
+                        <div class="text">MEMO</div>
                     </div>
                     <div>
-                        <div class="sa-number">1</div>
-                        <div class="sa-text">TAG</div>
+                        <div class="number">1</div>
+                        <div class="text">TAG</div>
                     </div>
                     <div>
-                        <div class="sa-number">{{ infoData.day }}</div>
-                        <div class="sa-text">DAY</div>
+                        <div class="number">{{ infoData.day }}</div>
+                        <div class="text">DAY</div>
                     </div>
                 </div>
                 <!-- 荣誉墙 -->
                 <HonorWall :HonorWallData="honorWallData"></HonorWall>
                 <!-- 导航 -->
-                <div class="sa-aside-row3">
-                    <router-link to="/main" class="sa-button" :class="{ 'sa-show': linkName === 'main' }"
+                <div class="aside-row3">
+                    <router-link to="/main" class="button" :class="{ 'show': linkName === 'main' }"
                         @click="reds('main')">
                         <el-icon :size="14" :color="linkName === 'main' ? 'white' : '#9D9D9D'">
                             <grid />
                         </el-icon>MEMO
                     </router-link>
-                    <router-link to="/daily" class="sa-button" :class="{ 'sa-show': linkName === 'daily' }"
+                    <router-link to="/daily" class="button" :class="{ 'show': linkName === 'daily' }"
                         @click="reds('daily')">
                         <el-icon :size="14" :color="linkName === 'daily' ? 'white' : '#9D9D9D'">
                             <list />
                         </el-icon>每日回顾
                     </router-link>
-                    <router-link to="/random" class="sa-button" :class="{ 'sa-show': linkName === 'random' }"
+                    <router-link to="/random" class="button" :class="{ 'show': linkName === 'random' }"
                         @click="reds('random')">
                         <el-icon :size="14" :color="linkName === 'random' ? 'white' : '#9D9D9D'">
                             <sunny />
@@ -102,7 +102,7 @@ function getInfo() {
                     </router-link>
                 </div>
             </div>
-            <div class="sa-main">
+            <div class="main">
                 <router-view></router-view>
             </div>
         </div>
@@ -110,26 +110,25 @@ function getInfo() {
 </template>
 
 <style scoped lang="less">
-.sa-app-box {
+.app-box {
     display: flex;
     justify-content: center;
     background-color: #FAFAFA;
     margin: 0;
     padding: 10px;
-    font-family: 'JetBrains Mono', 'PingFang SC', monospace, sans-serif;
 }
 
-.sa-box {
+.box {
     width: 900px;
     display: flex;
     flex-direction: row;
 }
 
-.sa-aside {
+.aside {
     width: 25%;
     color: #9d9d9d;
 
-    .sa-aside-row1 {
+    .aside-row1 {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
@@ -140,13 +139,13 @@ function getInfo() {
             flex-direction: row;
             align-items: center;
 
-            .sa-aside-name {
+            .aside-name {
                 font-size: 18px;
                 color: #5f5f5f;
                 margin: 3px;
             }
 
-            .sa-asid-pro {
+            .asid-pro {
                 color: white;
                 background: #55bb8e;
                 font-size: 12px;
@@ -163,23 +162,23 @@ function getInfo() {
         }
     }
 
-    .sa-aside-row2 {
+    .aside-row2 {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
         margin: 20px 0;
         font-weight: bold;
 
-        .sa-number {
+        .number {
             font-size: 24px;
         }
 
-        .sa-text {
+        .text {
             font-size: 12px;
         }
     }
 
-    .sa-aside-row3 {
+    .aside-row3 {
         display: flex;
         flex-direction: column;
         margin-top: 24px;
@@ -188,7 +187,7 @@ function getInfo() {
             margin-right: 10px;
         }
 
-        .sa-button {
+        .button {
             display: flex;
             flex-direction: row;
             align-items: center;
@@ -201,14 +200,14 @@ function getInfo() {
             text-decoration: none;
         }
 
-        .sa-show {
+        .show {
             background-color: #55bb8e;
             color: white;
         }
     }
 }
 
-.sa-main {
+.main {
     width: 70%;
     margin-left: 5%;
 }
