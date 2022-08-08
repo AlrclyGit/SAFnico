@@ -12,8 +12,8 @@ if (!token) {
 
 <style>
 body {
+    font-family: sans-serif;
     padding: 0;
     margin: 0;
-    overflow: hidden;
 }
 </style>
