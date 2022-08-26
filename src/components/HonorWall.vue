@@ -67,7 +67,7 @@ function clickBlock() {
 .block {
     width: 12px;
     height: 12px;
-    background: #efefef;
+    background: var(--honor-wall);
     color: #d3ecdd;
     border: 1px solid transparent;
     border-radius: 2px;
@@ -105,5 +105,27 @@ function clickBlock() {
 
 .color5 {
     background: #216e39;
+}
+
+@media (prefers-color-scheme:dark) {
+    .color1 {
+        background: #475446;
+    }
+
+    .color2 {
+        background: #5d795c;
+    }
+
+    .color3 {
+        background: #79af77;
+    }
+
+    .color4 {
+        background: #30a14e;
+    }
+
+    .color5 {
+        background: #216e39;
+    }
 }
 </style>

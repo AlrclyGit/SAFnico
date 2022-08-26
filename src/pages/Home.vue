@@ -24,7 +24,7 @@ function getInfo() {
     // 获取信息
     axios({
         method: 'GET',
-        url: `https://flow.alrcly.com/api/info?token=${JSON.parse(localStorage.getItem('token'))}`,
+        url: `https://fnico.alrcly.com/api/info?token=${JSON.parse(localStorage.getItem('token'))}`,
     }).then((result) => {
         if (result.data.code == 0) {
             infoData.value = result.data.data
@@ -33,7 +33,7 @@ function getInfo() {
     // 获取荣誉墙数据
     axios({
         method: 'GET',
-        url: `https://flow.alrcly.com/api/honorWall?token=${JSON.parse(localStorage.getItem('token'))}`,
+        url: `https://fnico.alrcly.com/api/honorWall?token=${JSON.parse(localStorage.getItem('token'))}`,
     }).then((result) => {
         if (result.data.code == 0) {
             honorWallData.value = result.data.data
@@ -113,7 +113,7 @@ function getInfo() {
 .app-box {
     display: flex;
     justify-content: center;
-    background-color: #FAFAFA;
+    background-color: var(--back-color);
     margin: 0;
     padding: 10px;
 }
@@ -126,7 +126,7 @@ function getInfo() {
 
 .aside {
     width: 25%;
-    color: #9d9d9d;
+    color: var(--font-color-h2);
 
     .aside-row1 {
         display: flex;
@@ -141,7 +141,7 @@ function getInfo() {
 
             .aside-name {
                 font-size: 18px;
-                color: #5f5f5f;
+                color: var(--font-color);
                 margin: 3px;
             }
 
@@ -196,12 +196,12 @@ function getInfo() {
             padding-left: 10%;
             font-size: 14px;
             border-radius: 5px;
-            color: #9d9d9d;
+            color: var(--font-color-h2);
             text-decoration: none;
         }
 
         .show {
-            background-color: #55bb8e;
+            background-color: var(--main-color);
             color: white;
         }
     }

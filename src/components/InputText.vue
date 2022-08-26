@@ -60,7 +60,7 @@ function send() {
             // 请求 API
             axios({
                 method: 'POST',
-                url: 'https://flow.alrcly.com/api/updataPost',
+                url: 'https://fnico.alrcly.com/api/updataPost',
                 data: data
             }).then((result) => {
                 store.commit('listUpdata', result.data.data)
@@ -71,7 +71,7 @@ function send() {
             // 请求 API
             axios({
                 method: 'POST',
-                url: 'https://flow.alrcly.com/api/setPost',
+                url: 'https://fnico.alrcly.com/api/setPost',
                 data: data
             }).then((result) => {
                 // 将数据更新到列表
@@ -119,7 +119,7 @@ function imageUpdate() {
         param.append('token', JSON.parse(localStorage.getItem('token')))
         axios({
             method: 'POST',
-            url: 'https://flow.alrcly.com/api/updateImage',
+            url: 'https://fnico.alrcly.com/api/updateImage',
             data: param
         }).then((result) => {
             if (result.data.code == 0) {
@@ -173,9 +173,9 @@ function onRemove(data) {
 <style scoped lang="less">
 .input-text-box {
     position: relative;
-    border: 2px solid #e8e8e8;
+    border: 2px solid var(--main-color);
     border-radius: 8px;
-    background: #fff;
+    background: var(--back-color-h2);
     margin-top: 10px;
     padding: 10px;
 
@@ -184,6 +184,8 @@ function onRemove(data) {
         border: none;
         resize: none;
         margin-bottom: 6px;
+        color: var(--font-color);
+        background-color: var(--back-color-h2);
     }
 
     :deep(.el-upload) {

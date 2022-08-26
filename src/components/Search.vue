@@ -66,7 +66,7 @@ function clickCircleClose() {
         line-height: 40px;
         outline: 0;
         color: #606266;
-        background: #efefef;
+        background: var(--back-color-h2);
         width: 100%;
         border-radius: 8px;
         border: none;

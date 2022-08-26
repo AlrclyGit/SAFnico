@@ -40,7 +40,7 @@ function deletePsot(id) {
     }).then(() => {
         axios({
             method: 'POST',
-            url: `https://flow.alrcly.com/api/deletePost/${id}`,
+            url: `https://fnico.alrcly.com/api/deletePost/${id}`,
             data: { 'token': JSON.parse(localStorage.getItem('token')) }
         }).then((result) => {
             if (result.data.code == 0) {
@@ -95,7 +95,7 @@ function getPostList(isFirst = false) {
     }
     axios({
         method: 'GET',
-        url: `https://flow.alrcly.com/api/getPostList?token=${JSON.parse(localStorage.getItem('token'))}&page=${page.value}&keyword=${keyword.value}`,
+        url: `https://fnico.alrcly.com/api/getPostList?token=${JSON.parse(localStorage.getItem('token'))}&page=${page.value}&keyword=${keyword.value}`,
     }).then((result) => {
         if (isFirst) {
             store.commit('listCover', result.data.data)
@@ -175,13 +175,13 @@ function getPostHtml(text) {
 
     .item {
         position: relative;
-        background: #ffffff;
+        background: var(--back-color-h2);
         border-radius: 6px;
         padding: 15px;
         margin: 6px 5px;
 
         &:hover {
-            box-shadow: 0px 2px 16px #dddddd;
+            box-shadow: 0px 2px 16px var(--list-shadow);
         }
 
         .top {
@@ -201,7 +201,7 @@ function getPostHtml(text) {
             line-height: 1.8;
             min-height: 20px;
             margin: 0;
-            color: #323232;
+            color: var(--font-color);
             font-size: 14px;
             position: relative;
             overflow: hidden;
@@ -215,9 +215,9 @@ function getPostHtml(text) {
             }
 
             :deep(span) {
-                color: #5783f7;
+                color: var(--tag-color);
                 cursor: pointer;
-                background-color: #eef3fe;
+                background-color: var(--tag-back);
                 padding: 4px;
                 font-size: 12px;
                 border-radius: 3px;
