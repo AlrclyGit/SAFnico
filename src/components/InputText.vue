@@ -60,7 +60,7 @@ function send() {
             // 请求 API
             axios({
                 method: 'POST',
-                url: 'https://fnico.alrcly.com/api/updataPost',
+                url: 'https://api.fnico.alrcly.com/api/updataPost',
                 data: data
             }).then((result) => {
                 store.commit('listUpdata', result.data.data)
@@ -71,7 +71,7 @@ function send() {
             // 请求 API
             axios({
                 method: 'POST',
-                url: 'https://fnico.alrcly.com/api/setPost',
+                url: 'https://api.fnico.alrcly.com/api/setPost',
                 data: data
             }).then((result) => {
                 // 将数据更新到列表
@@ -119,7 +119,7 @@ function imageUpdate() {
         param.append('token', JSON.parse(localStorage.getItem('token')))
         axios({
             method: 'POST',
-            url: 'https://fnico.alrcly.com/api/updateImage',
+            url: 'https://api.fnico.alrcly.com/api/updateImage',
             data: param
         }).then((result) => {
             if (result.data.code == 0) {

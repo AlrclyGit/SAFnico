@@ -24,7 +24,7 @@ function getInfo() {
     // 获取信息
     axios({
         method: 'GET',
-        url: `https://fnico.alrcly.com/api/info?token=${JSON.parse(localStorage.getItem('token'))}`,
+        url: `https://api.fnico.alrcly.com/api/info?token=${JSON.parse(localStorage.getItem('token'))}`,
     }).then((result) => {
         if (result.data.code == 0) {
             infoData.value = result.data.data
@@ -33,7 +33,7 @@ function getInfo() {
     // 获取荣誉墙数据
     axios({
         method: 'GET',
-        url: `https://fnico.alrcly.com/api/honorWall?token=${JSON.parse(localStorage.getItem('token'))}`,
+        url: `https://api.fnico.alrcly.com/api/honorWall?token=${JSON.parse(localStorage.getItem('token'))}`,
     }).then((result) => {
         if (result.data.code == 0) {
             honorWallData.value = result.data.data
@@ -66,7 +66,7 @@ function getInfo() {
                 <!-- 数据栏目 -->
                 <div class="aside-row2">
                     <div>
-                        <div class="number">{{ infoData.count }}</div>
+                        <div class="number">{{  infoData.count  }}</div>
                         <div class="text">MEMO</div>
                     </div>
                     <div>
@@ -74,7 +74,7 @@ function getInfo() {
                         <div class="text">TAG</div>
                     </div>
                     <div>
-                        <div class="number">{{ infoData.day }}</div>
+                        <div class="number">{{  infoData.day  }}</div>
                         <div class="text">DAY</div>
                     </div>
                 </div>

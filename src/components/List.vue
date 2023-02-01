@@ -40,7 +40,7 @@ function deletePsot(id) {
     }).then(() => {
         axios({
             method: 'POST',
-            url: `https://fnico.alrcly.com/api/deletePost/${id}`,
+            url: `https://api.fnico.alrcly.com/api/deletePost/${id}`,
             data: { 'token': JSON.parse(localStorage.getItem('token')) }
         }).then((result) => {
             if (result.data.code == 0) {
@@ -95,7 +95,7 @@ function getPostList(isFirst = false) {
     }
     axios({
         method: 'GET',
-        url: `https://fnico.alrcly.com/api/getPostList?token=${JSON.parse(localStorage.getItem('token'))}&page=${page.value}&keyword=${keyword.value}`,
+        url: `https://api.fnico.alrcly.com/api/getPostList?token=${JSON.parse(localStorage.getItem('token'))}&page=${page.value}&keyword=${keyword.value}`,
     }).then((result) => {
         if (isFirst) {
             store.commit('listCover', result.data.data)
@@ -131,7 +131,7 @@ function getPostHtml(text) {
             <div class="item" v-for="item in lists" :key="item.id">
                 <div v-if="item.id != inputTextShow">
                     <div class="top">
-                        <div class="time">{{ moment(item.created_at).format('YYYY-MM-DD HH:mm:ss') }}</div>
+                        <div class="time">{{  moment(item.created_at).format('YYYY-MM-DD HH:mm:ss')  }}</div>
                         <el-popover placement="bottom" trigger="hover">
                             <template #reference>
                                 <el-icon :size="14" color="#9D9D9D">
