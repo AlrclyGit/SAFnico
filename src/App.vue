@@ -1,7 +1,7 @@
 <script setup>
 let token = JSON.parse(localStorage.getItem('token') || null)
 if (!token) {
-    let token = prompt('请速入 token')
+    let token = prompt('请输入 token')
     localStorage.setItem('token', JSON.stringify(token))
 }
 </script>
